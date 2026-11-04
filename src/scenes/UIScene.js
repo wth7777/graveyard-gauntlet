@@ -21,6 +21,15 @@ export default class UIScene extends Phaser.Scene {
   }
 
   create() {
+    console.log('[UI] UIScene.create() starting')
+    this.add.text(10, 10, 'UI: Started', {
+      fontSize: '14px',
+      fontFamily: 'Courier New, monospace',
+      color: '#4ade80',
+      backgroundColor: '#000000',
+      padding: { x: 4, y: 4 }
+    }).setDepth(1000)
+
     const width = this.cameras.main.width
     const height = this.cameras.main.height
 

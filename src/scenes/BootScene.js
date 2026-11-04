@@ -66,6 +66,14 @@ export default class BootScene extends Phaser.Scene {
   }
 
   create() {
+    console.log('[BOOT] BootScene.create() - all textures generated, starting MainScene')
+    this.add.text(10, 10, 'BOOT: Textures ready -> MainScene', {
+      fontSize: '14px',
+      fontFamily: 'Courier New, monospace',
+      color: '#4ade80',
+      backgroundColor: '#000000',
+      padding: { x: 4, y: 4 }
+    }).setDepth(1000)
     this.scene.start('MainScene')
   }
 
