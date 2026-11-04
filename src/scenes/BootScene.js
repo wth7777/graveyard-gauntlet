@@ -1,8 +1,18 @@
 /**
  * BootScene — Loads all assets and shows loading progress.
- * Uses procedural placeholder graphics so the game works without external art files.
- * Real sprites (including the cousin's photo-based character) can be dropped into
- * assets/images/ and referenced here.
+ * 
+ * Procedural character art is based on the cousin's photos:
+ * - White/gray full beard and mustache
+ * - Black-rimmed glasses
+ * - Black baseball cap with yellow/gold logo
+ * - Heavy arm tattoos ("MEMENTO MORI" on left arm, sleeve on both arms)
+ * - Black sleeveless athletic shirt with white trim + Sullen Art Collective skull logo
+ * - Silver chain with skull pendant, multiple rings
+ * - Stocky build, blue jeans
+ * - Image 3 shows him in a graveyard holding an axe
+ * 
+ * Real sprite images can be dropped into assets/images/ and loaded here
+ * to replace the procedural graphics.
  */
 
 import Phaser from 'phaser'
@@ -40,202 +50,419 @@ export default class BootScene extends Phaser.Scene {
       progressBar.destroy()
     })
 
-    // ---------- PROCEDURAL PLACEHOLDER GRAPHICS ----------
-    // These generate canvas-based textures so the game runs immediately.
-    // Replace with real sprite sheets (including the cousin's character) in assets/images/.
+    // ---------- PROCEDURAL CHARACTER GRAPHICS ----------
+    // Based on cousin's photos. Replace with real images in assets/images/.
 
-    // Player character (top-down, stylized — will be replaced with photo-based art)
     this.createPlayerSprite()
-
-    // Player face portrait (larger, for UI and prank moments)
-    this.createPlayerPortrait()
-
-    // Ghost enemy
+    this.createPlayerPortraits()
     this.createGhostSprite()
-
-    // Goblin enemy
     this.createGoblinSprite()
-
-    // Lady ghost (prankster)
     this.createLadyGhostSprite()
-
-    // Tattoo shop building
     this.createTattooShopSprite()
-
-    // Exit crypt
     this.createCryptSprite()
-
-    // Tiles / environment
     this.createTileTextures()
-
-    // Particles
     this.createParticleTextures()
-
-    // UI elements
     this.createUITextures()
-
-    // ---------- AUDIO (placeholder tones generated at runtime) ----------
-    // Audio is created procedurally in MainScene using the Web Audio API
-    // so there are no external audio file dependencies.
   }
 
   create() {
     this.scene.start('MainScene')
   }
 
-  // ---------- PROCEDURAL GRAPHICS GENERATORS ----------
+  // ============================================================
+  // PLAYER CHARACTER — Based on cousin's photos
+  // ============================================================
 
   createPlayerSprite() {
     const size = 48
     const canvas = this.make.graphics({ x: 0, y: 0, add: false })
-    canvas.fillStyle(0xe0e0e0, 1) // skin tone
-    canvas.fillCircle(size / 2, size / 2, size / 2.2) // head
-    canvas.fillStyle(0x8b4513, 1) // hair
-    canvas.fillCircle(size / 2, size * 0.3, size / 2)
-    canvas.fillStyle(0x4a7c59, 1) // green tunic
-    canvas.fillRect(size * 0.25, size * 0.55, size * 0.5, size * 0.4) // body
-    canvas.fillStyle(0xffd700, 1) // belt
-    canvas.fillRect(size * 0.35, size * 0.85, size * 0.3, size * 0.1)
+
+    // ---------- HEAD ----------
+    // Skin tone
+    canvas.fillStyle(0xe8c39e, 1)
+    canvas.fillCircle(size / 2, size / 2, size / 2.3) // head
+
+    // Black baseball cap
+    canvas.fillStyle(0x1a1a1a, 1)
+    canvas.fillCircle(size / 2, size * 0.28, size / 2.1) // cap dome
+    canvas.fillRect(size * 0.15, size * 0.28, size * 0.7, size * 0.12) // cap brim
+    // Cap logo (yellow/gold)
+    canvas.fillStyle(0xffd700, 1)
+    canvas.fillCircle(size / 2, size * 0.22, size * 0.08)
+
+    // Black glasses
+    canvas.lineStyle(3, 0x1a1a1a, 1)
+    canvas.lineBetween(size * 0.3, size * 0.32, size * 0.22, size * 0.34)
+    canvas.lineBetween(size * 0.7, size * 0.32, size * 0.78, size * 0.34)
+    canvas.fillRect(size * 0.2, size * 0.3, size * 0.6, size * 0.06)
+
+    // White/gray full beard
+    canvas.fillStyle(0xf0f0f0, 1)
+    canvas.fillCircle(size / 2, size * 0.62, size / 2.6) // beard mass
+    canvas.fillStyle(0xe8c39e, 1)
+    canvas.fillRect(size * 0.25, size * 0.45, size * 0.5, size * 0.25) // chin/neck bridge
+
+    // Mustache (white)
+    canvas.fillStyle(0xf0f0f0, 1)
+    canvas.fillEllipse(size / 2, size * 0.42, size * 0.18, size * 0.08)
+
+    // ---------- BODY ----------
+    // Black tank top with white trim
+    canvas.fillStyle(0x1a1a1a, 1)
+    canvas.fillRect(size * 0.22, size * 0.52, size * 0.56, size * 0.42) // torso
+    canvas.fillStyle(0xffffff, 1)
+    canvas.fillRect(size * 0.18, size * 0.5, size * 0.08, size * 0.45) // left strap
+    canvas.fillRect(size * 0.74, size * 0.5, size * 0.08, size * 0.45) // right strap
+    canvas.fillRect(size * 0.18, size * 0.5, size * 0.64, size * 0.06) // neck trim
+
+    // Sullen Art Collective logo (chest circle)
+    canvas.lineStyle(2, 0xffffff, 1)
+    canvas.strokeCircle(size / 2, size * 0.68, size * 0.12)
+    canvas.fillStyle(0xffffff, 1)
+    canvas.fillCircle(size / 2, size * 0.68, size * 0.05) // skull center
+    canvas.fillRect(size * 0.45, size * 0.64, size * 0.1, size * 0.03) // crossbar
+
+    // Silver chain necklace
+    canvas.lineStyle(1, 0xc0c0c0, 1)
+    canvas.lineBetween(size * 0.4, size * 0.45, size * 0.6, size * 0.45)
+    // Skull pendant
+    canvas.fillStyle(0xc0c0c0, 1)
+    canvas.fillCircle(size / 2, size * 0.58, size * 0.04)
+
+    // ---------- ARMS WITH TATTOOS ----------
+    // Left arm (viewer's right) - heavy tattoos including MEMENTO MORI
+    canvas.fillStyle(0xe8c39e, 1)
+    canvas.fillRect(size * 0.05, size * 0.55, size * 0.18, size * 0.3) // arm
+    canvas.fillStyle(0x2a2a2a, 0.6)
+    canvas.fillRect(size * 0.08, size * 0.6, size * 0.12, size * 0.15) // tattoo block
+    canvas.fillRect(size * 0.08, size * 0.75, size * 0.12, size * 0.1) // tattoo block
+
+    // Right arm (viewer's left) - tattoos
+    canvas.fillStyle(0xe8c39e, 1)
+    canvas.fillRect(size * 0.77, size * 0.55, size * 0.18, size * 0.3) // arm
+    canvas.fillStyle(0x2a2a2a, 0.6)
+    canvas.fillRect(size * 0.8, size * 0.6, size * 0.12, size * 0.15) // tattoo block
+    canvas.fillRect(size * 0.8, size * 0.75, size * 0.12, size * 0.1) // tattoo block
+
+    // Hands with rings
+    canvas.fillStyle(0xe8c39e, 1)
+    canvas.fillCircle(size * 0.13, size * 0.88, size * 0.08) // left hand
+    canvas.fillCircle(size * 0.87, size * 0.88, size * 0.08) // right hand
+    canvas.fillStyle(0xc0c0c0, 1)
+    canvas.fillRect(size * 0.1, size * 0.85, size * 0.05, size * 0.04) // ring left
+    canvas.fillRect(size * 0.84, size * 0.85, size * 0.05, size * 0.04) // ring right
+
     canvas.generateTexture('player-idle', size, size)
 
-    // Walk frames (simple leg offset)
+    // ---------- WALK FRAME 1 (left leg forward) ----------
     const canvas2 = this.make.graphics({ x: 0, y: 0, add: false })
-    canvas2.fillStyle(0xe0e0e0, 1)
-    canvas2.fillCircle(size / 2, size / 2, size / 2.2)
-    canvas2.fillStyle(0x8b4513, 1)
-    canvas2.fillCircle(size / 2, size * 0.3, size / 2)
-    canvas2.fillStyle(0x4a7c59, 1)
-    canvas2.fillRect(size * 0.25, size * 0.55, size * 0.5, size * 0.4)
+    // Head & body (same as idle)
+    canvas2.fillStyle(0xe8c39e, 1)
+    canvas2.fillCircle(size / 2, size / 2, size / 2.3)
+    canvas2.fillStyle(0x1a1a1a, 1)
+    canvas2.fillCircle(size / 2, size * 0.28, size / 2.1)
+    canvas2.fillRect(size * 0.15, size * 0.28, size * 0.7, size * 0.12)
     canvas2.fillStyle(0xffd700, 1)
-    canvas2.fillRect(size * 0.35, size * 0.85, size * 0.3, size * 0.1)
-    canvas2.fillStyle(0x2d5a27, 1) // leg forward
-    canvas2.fillRect(size * 0.3, size * 0.9, size * 0.15, size * 0.1)
+    canvas2.fillCircle(size / 2, size * 0.22, size * 0.08)
+    canvas2.lineStyle(3, 0x1a1a1a, 1)
+    canvas2.lineBetween(size * 0.3, size * 0.32, size * 0.22, size * 0.34)
+    canvas2.lineBetween(size * 0.7, size * 0.32, size * 0.78, size * 0.34)
+    canvas2.fillRect(size * 0.2, size * 0.3, size * 0.6, size * 0.06)
+    canvas2.fillStyle(0xf0f0f0, 1)
+    canvas2.fillCircle(size / 2, size * 0.62, size / 2.6)
+    canvas2.fillStyle(0xe8c39e, 1)
+    canvas2.fillRect(size * 0.25, size * 0.45, size * 0.5, size * 0.25)
+    canvas2.fillStyle(0xf0f0f0, 1)
+    canvas2.fillEllipse(size / 2, size * 0.42, size * 0.18, size * 0.08)
+    canvas2.fillStyle(0x1a1a1a, 1)
+    canvas2.fillRect(size * 0.22, size * 0.52, size * 0.56, size * 0.42)
+    canvas2.fillStyle(0xffffff, 1)
+    canvas2.fillRect(size * 0.18, size * 0.5, size * 0.08, size * 0.45)
+    canvas2.fillRect(size * 0.74, size * 0.5, size * 0.08, size * 0.45)
+    canvas2.fillRect(size * 0.18, size * 0.5, size * 0.64, size * 0.06)
+    canvas2.lineStyle(2, 0xffffff, 1)
+    canvas2.strokeCircle(size / 2, size * 0.68, size * 0.12)
+    canvas2.fillStyle(0xffffff, 1)
+    canvas2.fillCircle(size / 2, size * 0.68, size * 0.05)
+    canvas2.fillRect(size * 0.45, size * 0.64, size * 0.1, size * 0.03)
+    canvas2.lineStyle(1, 0xc0c0c0, 1)
+    canvas2.lineBetween(size * 0.4, size * 0.45, size * 0.6, size * 0.45)
+    canvas2.fillStyle(0xc0c0c0, 1)
+    canvas2.fillCircle(size / 2, size * 0.58, size * 0.04)
+    canvas2.fillStyle(0xe8c39e, 1)
+    canvas2.fillRect(size * 0.05, size * 0.55, size * 0.18, size * 0.3)
+    canvas2.fillStyle(0x2a2a2a, 0.6)
+    canvas2.fillRect(size * 0.08, size * 0.6, size * 0.12, size * 0.15)
+    canvas2.fillRect(size * 0.08, size * 0.75, size * 0.12, size * 0.1)
+    canvas2.fillStyle(0xe8c39e, 1)
+    canvas2.fillRect(size * 0.77, size * 0.55, size * 0.18, size * 0.3)
+    canvas2.fillStyle(0x2a2a2a, 0.6)
+    canvas2.fillRect(size * 0.8, size * 0.6, size * 0.12, size * 0.15)
+    canvas2.fillRect(size * 0.8, size * 0.75, size * 0.12, size * 0.1)
+    canvas2.fillStyle(0xe8c39e, 1)
+    canvas2.fillCircle(size * 0.13, size * 0.88, size * 0.08)
+    canvas2.fillCircle(size * 0.87, size * 0.88, size * 0.08)
+    canvas2.fillStyle(0xc0c0c0, 1)
+    canvas2.fillRect(size * 0.1, size * 0.85, size * 0.05, size * 0.04)
+    canvas2.fillRect(size * 0.84, size * 0.85, size * 0.05, size * 0.04)
+    // Left leg forward (blue jeans)
+    canvas2.fillStyle(0x4a6fa5, 1)
+    canvas2.fillRect(size * 0.3, size * 0.88, size * 0.16, size * 0.12)
     canvas2.generateTexture('player-walk-1', size, size)
 
+    // ---------- WALK FRAME 2 (right leg forward) ----------
     const canvas3 = this.make.graphics({ x: 0, y: 0, add: false })
-    canvas3.fillStyle(0xe0e0e0, 1)
-    canvas3.fillCircle(size / 2, size / 2, size / 2.2)
-    canvas3.fillStyle(0x8b4513, 1)
-    canvas3.fillCircle(size / 2, size * 0.3, size / 2)
-    canvas3.fillStyle(0x4a7c59, 1)
-    canvas3.fillRect(size * 0.25, size * 0.55, size * 0.5, size * 0.4)
+    canvas3.fillStyle(0xe8c39e, 1)
+    canvas3.fillCircle(size / 2, size / 2, size / 2.3)
+    canvas3.fillStyle(0x1a1a1a, 1)
+    canvas3.fillCircle(size / 2, size * 0.28, size / 2.1)
+    canvas3.fillRect(size * 0.15, size * 0.28, size * 0.7, size * 0.12)
     canvas3.fillStyle(0xffd700, 1)
-    canvas3.fillRect(size * 0.35, size * 0.85, size * 0.3, size * 0.1)
-    canvas3.fillStyle(0x2d5a27, 1) // other leg forward
-    canvas3.fillRect(size * 0.55, size * 0.9, size * 0.15, size * 0.1)
+    canvas3.fillCircle(size / 2, size * 0.22, size * 0.08)
+    canvas3.lineStyle(3, 0x1a1a1a, 1)
+    canvas3.lineBetween(size * 0.3, size * 0.32, size * 0.22, size * 0.34)
+    canvas3.lineBetween(size * 0.7, size * 0.32, size * 0.78, size * 0.34)
+    canvas3.fillRect(size * 0.2, size * 0.3, size * 0.6, size * 0.06)
+    canvas3.fillStyle(0xf0f0f0, 1)
+    canvas3.fillCircle(size / 2, size * 0.62, size / 2.6)
+    canvas3.fillStyle(0xe8c39e, 1)
+    canvas3.fillRect(size * 0.25, size * 0.45, size * 0.5, size * 0.25)
+    canvas3.fillStyle(0xf0f0f0, 1)
+    canvas3.fillEllipse(size / 2, size * 0.42, size * 0.18, size * 0.08)
+    canvas3.fillStyle(0x1a1a1a, 1)
+    canvas3.fillRect(size * 0.22, size * 0.52, size * 0.56, size * 0.42)
+    canvas3.fillStyle(0xffffff, 1)
+    canvas3.fillRect(size * 0.18, size * 0.5, size * 0.08, size * 0.45)
+    canvas3.fillRect(size * 0.74, size * 0.5, size * 0.08, size * 0.45)
+    canvas3.fillRect(size * 0.18, size * 0.5, size * 0.64, size * 0.06)
+    canvas3.lineStyle(2, 0xffffff, 1)
+    canvas3.strokeCircle(size / 2, size * 0.68, size * 0.12)
+    canvas3.fillStyle(0xffffff, 1)
+    canvas3.fillCircle(size / 2, size * 0.68, size * 0.05)
+    canvas3.fillRect(size * 0.45, size * 0.64, size * 0.1, size * 0.03)
+    canvas3.lineStyle(1, 0xc0c0c0, 1)
+    canvas3.lineBetween(size * 0.4, size * 0.45, size * 0.6, size * 0.45)
+    canvas3.fillStyle(0xc0c0c0, 1)
+    canvas3.fillCircle(size / 2, size * 0.58, size * 0.04)
+    canvas3.fillStyle(0xe8c39e, 1)
+    canvas3.fillRect(size * 0.05, size * 0.55, size * 0.18, size * 0.3)
+    canvas3.fillStyle(0x2a2a2a, 0.6)
+    canvas3.fillRect(size * 0.08, size * 0.6, size * 0.12, size * 0.15)
+    canvas3.fillRect(size * 0.08, size * 0.75, size * 0.12, size * 0.1)
+    canvas3.fillStyle(0xe8c39e, 1)
+    canvas3.fillRect(size * 0.77, size * 0.55, size * 0.18, size * 0.3)
+    canvas3.fillStyle(0x2a2a2a, 0.6)
+    canvas3.fillRect(size * 0.8, size * 0.6, size * 0.12, size * 0.15)
+    canvas3.fillRect(size * 0.8, size * 0.75, size * 0.12, size * 0.1)
+    canvas3.fillStyle(0xe8c39e, 1)
+    canvas3.fillCircle(size * 0.13, size * 0.88, size * 0.08)
+    canvas3.fillCircle(size * 0.87, size * 0.88, size * 0.08)
+    canvas3.fillStyle(0xc0c0c0, 1)
+    canvas3.fillRect(size * 0.1, size * 0.85, size * 0.05, size * 0.04)
+    canvas3.fillRect(size * 0.84, size * 0.85, size * 0.05, size * 0.04)
+    // Right leg forward (blue jeans)
+    canvas3.fillStyle(0x4a6fa5, 1)
+    canvas3.fillRect(size * 0.54, size * 0.88, size * 0.16, size * 0.12)
     canvas3.generateTexture('player-walk-2', size, size)
 
-    // Attack frame (arm forward)
+    // ---------- ATTACK FRAME (arm forward with axe swing) ----------
     const canvas4 = this.make.graphics({ x: 0, y: 0, add: false })
-    canvas4.fillStyle(0xe0e0e0, 1)
-    canvas4.fillCircle(size / 2, size / 2, size / 2.2)
-    canvas4.fillStyle(0x8b4513, 1)
-    canvas4.fillCircle(size / 2, size * 0.3, size / 2)
-    canvas4.fillStyle(0x4a7c59, 1)
-    canvas4.fillRect(size * 0.25, size * 0.55, size * 0.5, size * 0.4)
+    canvas4.fillStyle(0xe8c39e, 1)
+    canvas4.fillCircle(size / 2, size / 2, size / 2.3)
+    canvas4.fillStyle(0x1a1a1a, 1)
+    canvas4.fillCircle(size / 2, size * 0.28, size / 2.1)
+    canvas4.fillRect(size * 0.15, size * 0.28, size * 0.7, size * 0.12)
     canvas4.fillStyle(0xffd700, 1)
-    canvas4.fillRect(size * 0.35, size * 0.85, size * 0.3, size * 0.1)
-    canvas4.fillStyle(0xe0e0e0, 1) // attack arm
-    canvas4.fillRect(size * 0.7, size * 0.5, size * 0.25, size * 0.15)
+    canvas4.fillCircle(size / 2, size * 0.22, size * 0.08)
+    canvas4.lineStyle(3, 0x1a1a1a, 1)
+    canvas4.lineBetween(size * 0.3, size * 0.32, size * 0.22, size * 0.34)
+    canvas4.lineBetween(size * 0.7, size * 0.32, size * 0.78, size * 0.34)
+    canvas4.fillRect(size * 0.2, size * 0.3, size * 0.6, size * 0.06)
+    canvas4.fillStyle(0xf0f0f0, 1)
+    canvas4.fillCircle(size / 2, size * 0.62, size / 2.6)
+    canvas4.fillStyle(0xe8c39e, 1)
+    canvas4.fillRect(size * 0.25, size * 0.45, size * 0.5, size * 0.25)
+    canvas4.fillStyle(0xf0f0f0, 1)
+    canvas4.fillEllipse(size / 2, size * 0.42, size * 0.18, size * 0.08)
+    canvas4.fillStyle(0x1a1a1a, 1)
+    canvas4.fillRect(size * 0.22, size * 0.52, size * 0.56, size * 0.42)
+    canvas4.fillStyle(0xffffff, 1)
+    canvas4.fillRect(size * 0.18, size * 0.5, size * 0.08, size * 0.45)
+    canvas4.fillRect(size * 0.74, size * 0.5, size * 0.08, size * 0.45)
+    canvas4.fillRect(size * 0.18, size * 0.5, size * 0.64, size * 0.06)
+    canvas4.lineStyle(2, 0xffffff, 1)
+    canvas4.strokeCircle(size / 2, size * 0.68, size * 0.12)
+    canvas4.fillStyle(0xffffff, 1)
+    canvas4.fillCircle(size / 2, size * 0.68, size * 0.05)
+    canvas4.fillRect(size * 0.45, size * 0.64, size * 0.1, size * 0.03)
+    canvas4.lineStyle(1, 0xc0c0c0, 1)
+    canvas4.lineBetween(size * 0.4, size * 0.45, size * 0.6, size * 0.45)
+    canvas4.fillStyle(0xc0c0c0, 1)
+    canvas4.fillCircle(size / 2, size * 0.58, size * 0.04)
+    canvas4.fillStyle(0xe8c39e, 1)
+    canvas4.fillRect(size * 0.05, size * 0.55, size * 0.18, size * 0.3)
+    canvas4.fillStyle(0x2a2a2a, 0.6)
+    canvas4.fillRect(size * 0.08, size * 0.6, size * 0.12, size * 0.15)
+    canvas4.fillRect(size * 0.08, size * 0.75, size * 0.12, size * 0.1)
+    canvas4.fillStyle(0xe8c39e, 1)
+    canvas4.fillRect(size * 0.77, size * 0.55, size * 0.18, size * 0.3)
+    canvas4.fillStyle(0x2a2a2a, 0.6)
+    canvas4.fillRect(size * 0.8, size * 0.6, size * 0.12, size * 0.15)
+    canvas4.fillRect(size * 0.8, size * 0.75, size * 0.12, size * 0.1)
+    canvas4.fillStyle(0xe8c39e, 1)
+    canvas4.fillCircle(size * 0.13, size * 0.88, size * 0.08)
+    canvas4.fillCircle(size * 0.87, size * 0.88, size * 0.08)
+    canvas4.fillStyle(0xc0c0c0, 1)
+    canvas4.fillRect(size * 0.1, size * 0.85, size * 0.05, size * 0.04)
+    canvas4.fillRect(size * 0.84, size * 0.85, size * 0.05, size * 0.04)
+    // Axe swing (right arm forward)
+    canvas4.fillStyle(0x5d4037, 1)
+    canvas4.fillRect(size * 0.8, size * 0.5, size * 0.2, size * 0.1) // handle
+    canvas4.fillStyle(0x8b4513, 1)
+    canvas4.fillRect(size * 0.95, size * 0.48, size * 0.1, size * 0.12) // blade
     canvas4.generateTexture('player-attack', size, size)
 
     this.anims.create({
       key: 'player-walk',
-      frames: this.anims.generateFrameNames('player-idle', { start: 0, end: 0 }).concat(
-        this.anims.generateFrameNames('player-walk-1', { start: 0, end: 0 }),
-        this.anims.generateFrameNames('player-idle', { start: 0, end: 0 }),
-        this.anims.generateFrameNames('player-walk-2', { start: 0, end: 0 })
-      ),
+      frames: [
+        { key: 'player-walk-1', frame: 0 },
+        { key: 'player-idle', frame: 0 },
+        { key: 'player-walk-2', frame: 0 },
+        { key: 'player-idle', frame: 0 }
+      ],
       frameRate: 10,
       repeat: -1
     })
   }
 
-  createPlayerPortrait() {
+  // ============================================================
+  // PLAYER FACE PORTRAITS — For UI, pranks, shop moments
+  // ============================================================
+
+  createPlayerPortraits() {
     const size = 96
     const canvas = this.make.graphics({ x: 0, y: 0, add: false })
-    // Face shape
-    canvas.fillStyle(0xe0e0e0, 1)
-    canvas.fillCircle(size / 2, size / 2, size / 2.4)
-    // Hair
-    canvas.fillStyle(0x5d4037, 1)
-    canvas.fillCircle(size / 2, size * 0.35, size / 2.2)
-    // Eyes
-    canvas.fillStyle(0x000000, 1)
-    canvas.fillCircle(size * 0.35, size * 0.4, size * 0.06)
-    canvas.fillCircle(size * 0.65, size * 0.4, size * 0.06)
-    // Nose
-    canvas.fillStyle(0xccaa99, 1)
-    canvas.fillCircle(size / 2, size * 0.5, size * 0.05)
-    // Mouth
-    canvas.fillStyle(0x8b4513, 1)
-    canvas.fillRect(size * 0.45, size * 0.58, size * 0.1, size * 0.05)
-    // Expression lines
-    canvas.lineStyle(2, 0x5d4037, 1)
-    canvas.lineBetween(size * 0.3, size * 0.32, size * 0.2, size * 0.4)
-    canvas.lineBetween(size * 0.7, size * 0.32, size * 0.8, size * 0.4)
+
+    // ---------- NORMAL PORTRAIT ----------
+    canvas.fillStyle(0xe8c39e, 1)
+    canvas.fillCircle(size / 2, size / 2, size / 2.3) // face
+    canvas.fillStyle(0x1a1a1a, 1)
+    canvas.fillCircle(size / 2, size * 0.32, size / 2.1) // hair under cap
+    canvas.fillRect(size * 0.1, size * 0.15, size * 0.8, size * 0.2) // cap
+    canvas.fillStyle(0xffd700, 1)
+    canvas.fillCircle(size / 2, size * 0.22, size * 0.07) // cap logo
+    // Glasses
+    canvas.lineStyle(3, 0x1a1a1a, 1)
+    canvas.lineBetween(size * 0.3, size * 0.38, size * 0.22, size * 0.4)
+    canvas.lineBetween(size * 0.7, size * 0.38, size * 0.78, size * 0.4)
+    canvas.fillRect(size * 0.18, size * 0.36, size * 0.64, size * 0.07)
+    // White beard
+    canvas.fillStyle(0xf0f0f0, 1)
+    canvas.fillCircle(size / 2, size * 0.68, size / 2.4)
+    canvas.fillStyle(0xe8c39e, 1)
+    canvas.fillRect(size * 0.3, size * 0.5, size * 0.4, size * 0.25) // chin bridge
+    // Mustache
+    canvas.fillStyle(0xf0f0f0, 1)
+    canvas.fillEllipse(size / 2, size * 0.5, size * 0.2, size * 0.09)
+    // Neck tattoo
+    canvas.fillStyle(0x2a2a2a, 0.5)
+    canvas.fillRect(size * 0.42, size * 0.42, size * 0.16, size * 0.08)
     canvas.generateTexture('player-portrait', size, size)
 
-    // Hurt portrait (different expression)
+    // ---------- HURT PORTRAIT ----------
     const canvas2 = this.make.graphics({ x: 0, y: 0, add: false })
-    canvas2.fillStyle(0xe0e0e0, 1)
-    canvas2.fillCircle(size / 2, size / 2, size / 2.4)
-    canvas2.fillStyle(0x5d4037, 1)
-    canvas2.fillCircle(size / 2, size * 0.35, size / 2.2)
-    canvas2.fillStyle(0xff0000, 1)
-    canvas2.fillCircle(size * 0.35, size * 0.4, size * 0.06)
-    canvas2.fillCircle(size * 0.65, size * 0.4, size * 0.06)
-    canvas2.fillStyle(0xccaa99, 1)
-    canvas2.fillCircle(size / 2, size * 0.5, size * 0.05)
-    canvas2.fillStyle(0x4a4a4a, 1)
-    canvas2.fillRect(size * 0.45, size * 0.6, size * 0.1, size * 0.04)
+    canvas2.fillStyle(0xe8c39e, 1)
+    canvas2.fillCircle(size / 2, size / 2, size / 2.3)
+    canvas2.fillStyle(0x1a1a1a, 1)
+    canvas2.fillCircle(size / 2, size * 0.32, size / 2.1)
+    canvas2.fillRect(size * 0.1, size * 0.15, size * 0.8, size * 0.2)
+    canvas2.fillStyle(0xffd700, 1)
+    canvas2.fillCircle(size / 2, size * 0.22, size * 0.07)
+    canvas2.lineStyle(3, 0x1a1a1a, 1)
+    canvas2.lineBetween(size * 0.3, size * 0.38, size * 0.22, size * 0.4)
+    canvas2.lineBetween(size * 0.7, size * 0.38, size * 0.78, size * 0.4)
+    canvas2.fillRect(size * 0.18, size * 0.36, size * 0.64, size * 0.07)
+    canvas2.fillStyle(0xff0000, 0.4) // blood/darkness overlay
+    canvas2.fillCircle(size / 2, size * 0.68, size / 2.4)
+    canvas2.fillStyle(0xf0f0f0, 1)
+    canvas2.fillCircle(size / 2, size * 0.68, size / 2.6)
+    canvas2.fillStyle(0xe8c39e, 1)
+    canvas2.fillRect(size * 0.3, size * 0.5, size * 0.4, size * 0.25)
+    canvas2.fillStyle(0xf0f0f0, 1)
+    canvas2.fillEllipse(size / 2, size * 0.5, size * 0.2, size * 0.09)
+    canvas2.fillStyle(0x2a2a2a, 0.5)
+    canvas2.fillRect(size * 0.42, size * 0.42, size * 0.16, size * 0.08)
     canvas2.generateTexture('player-portrait-hurt', size, size)
 
-    // Victory portrait
+    // ---------- VICTORY PORTRAIT ----------
     const canvas3 = this.make.graphics({ x: 0, y: 0, add: false })
-    canvas3.fillStyle(0xe0e0e0, 1)
-    canvas3.fillCircle(size / 2, size / 2, size / 2.4)
-    canvas3.fillStyle(0x5d4037, 1)
-    canvas3.fillCircle(size / 2, size * 0.35, size / 2.2)
-    canvas3.fillStyle(0x00aa00, 1)
-    canvas3.fillCircle(size * 0.35, size * 0.38, size * 0.06)
-    canvas3.fillCircle(size * 0.65, size * 0.38, size * 0.06)
-    canvas3.fillStyle(0xccaa99, 1)
-    canvas3.fillCircle(size / 2, size * 0.48, size * 0.05)
+    canvas3.fillStyle(0xe8c39e, 1)
+    canvas3.fillCircle(size / 2, size / 2, size / 2.3)
+    canvas3.fillStyle(0x1a1a1a, 1)
+    canvas3.fillCircle(size / 2, size * 0.32, size / 2.1)
+    canvas3.fillRect(size * 0.1, size * 0.15, size * 0.8, size * 0.2)
+    canvas3.fillStyle(0xffd700, 1)
+    canvas3.fillCircle(size / 2, size * 0.22, size * 0.07)
+    canvas3.lineStyle(3, 0x1a1a1a, 1)
+    canvas3.lineBetween(size * 0.3, size * 0.38, size * 0.22, size * 0.4)
+    canvas3.lineBetween(size * 0.7, size * 0.38, size * 0.78, size * 0.4)
+    canvas3.fillRect(size * 0.18, size * 0.36, size * 0.64, size * 0.07)
+    canvas3.fillStyle(0xf0f0f0, 1)
+    canvas3.fillCircle(size / 2, size * 0.68, size / 2.4)
+    canvas3.fillStyle(0xe8c39e, 1)
+    canvas3.fillRect(size * 0.3, size * 0.5, size * 0.4, size * 0.25)
+    canvas3.fillStyle(0xf0f0f0, 1)
+    canvas3.fillEllipse(size / 2, size * 0.5, size * 0.2, size * 0.09)
+    canvas3.fillStyle(0x2a2a2a, 0.5)
+    canvas3.fillRect(size * 0.42, size * 0.42, size * 0.16, size * 0.08)
+    // Victory smile
     canvas3.fillStyle(0x4ade80, 1)
-    canvas3.fillRect(size * 0.42, size * 0.55, size * 0.16, size * 0.06)
+    canvas3.fillRect(size * 0.43, size * 0.56, size * 0.14, size * 0.06)
     canvas3.generateTexture('player-portrait-victory', size, size)
 
-    // Tattoo/inked portrait (face being worked on)
+    // ---------- INKED PORTRAIT (tattoo shop) ----------
     const canvas4 = this.make.graphics({ x: 0, y: 0, add: false })
-    canvas4.fillStyle(0xe0e0e0, 1)
-    canvas4.fillCircle(size / 2, size / 2, size / 2.4)
-    canvas4.fillStyle(0x5d4037, 1)
-    canvas4.fillCircle(size / 2, size * 0.35, size / 2.2)
-    canvas4.fillStyle(0x000000, 1)
-    canvas4.fillCircle(size * 0.35, size * 0.4, size * 0.06)
-    canvas4.fillCircle(size * 0.65, size * 0.4, size * 0.06)
-    canvas4.fillStyle(0xccaa99, 1)
-    canvas4.fillCircle(size / 2, size * 0.5, size * 0.05)
-    canvas4.fillStyle(0x4a4a4a, 1)
-    canvas4.fillRect(size * 0.45, size * 0.58, size * 0.1, size * 0.05)
-    // Ink marks on face
-    canvas4.fillStyle(0x000000, 0.3)
-    canvas4.fillCircle(size * 0.3, size * 0.3, size * 0.03)
-    canvas4.fillCircle(size * 0.7, size * 0.45, size * 0.03)
+    canvas4.fillStyle(0xe8c39e, 1)
+    canvas4.fillCircle(size / 2, size / 2, size / 2.3)
+    canvas4.fillStyle(0x1a1a1a, 1)
+    canvas4.fillCircle(size / 2, size * 0.32, size / 2.1)
+    canvas4.fillRect(size * 0.1, size * 0.15, size * 0.8, size * 0.2)
+    canvas4.fillStyle(0xffd700, 1)
+    canvas4.fillCircle(size / 2, size * 0.22, size * 0.07)
+    canvas4.lineStyle(3, 0x1a1a1a, 1)
+    canvas4.lineBetween(size * 0.3, size * 0.38, size * 0.22, size * 0.4)
+    canvas4.lineBetween(size * 0.7, size * 0.38, size * 0.78, size * 0.4)
+    canvas4.fillRect(size * 0.18, size * 0.36, size * 0.64, size * 0.07)
+    canvas4.fillStyle(0xf0f0f0, 1)
+    canvas4.fillCircle(size / 2, size * 0.68, size / 2.4)
+    canvas4.fillStyle(0xe8c39e, 1)
+    canvas4.fillRect(size * 0.3, size * 0.5, size * 0.4, size * 0.25)
+    canvas4.fillStyle(0xf0f0f0, 1)
+    canvas4.fillEllipse(size / 2, size * 0.5, size * 0.2, size * 0.09)
+    canvas4.fillStyle(0x2a2a2a, 0.5)
+    canvas4.fillRect(size * 0.42, size * 0.42, size * 0.16, size * 0.08)
+    // Fresh ink marks on face
+    canvas4.fillStyle(0x000000, 0.4)
+    canvas4.fillCircle(size * 0.32, size * 0.36, size * 0.035)
+    canvas4.fillCircle(size * 0.68, size * 0.44, size * 0.035)
+    canvas4.fillRect(size * 0.44, size * 0.5, size * 0.02, size * 0.04)
     canvas4.generateTexture('player-portrait-inked', size, size)
   }
+
+  // ============================================================
+  // ENEMIES
+  // ============================================================
 
   createGhostSprite() {
     const size = 40
     const canvas = this.make.graphics({ x: 0, y: 0, add: false })
-    canvas.fillStyle(0xffffff, 0.6)
+    canvas.fillStyle(0xffffff, 0.5)
     canvas.fillCircle(size / 2, size / 2, size / 2)
-    canvas.fillStyle(0x00ffff, 0.8)
-    canvas.fillCircle(size / 2, size * 0.35, size * 0.15) // left eye
-    canvas.fillCircle(size / 2 + size * 0.25, size * 0.35, size * 0.15) // right eye
+    canvas.fillStyle(0x00ffff, 0.9)
+    canvas.fillCircle(size / 2 - size * 0.12, size * 0.38, size * 0.12)
+    canvas.fillCircle(size / 2 + size * 0.12, size * 0.38, size * 0.12)
     canvas.fillStyle(0xff6b6b, 1)
-    canvas.fillCircle(size / 2, size * 0.6, size * 0.08) // mouth
+    canvas.fillCircle(size / 2, size * 0.62, size * 0.07)
     canvas.generateTexture('ghost', size, size)
   }
 
@@ -243,12 +470,12 @@ export default class BootScene extends Phaser.Scene {
     const size = 40
     const canvas = this.make.graphics({ x: 0, y: 0, add: false })
     canvas.fillStyle(0x4a7c59, 1)
-    canvas.fillCircle(size / 2, size / 2, size / 2.2) // head
+    canvas.fillCircle(size / 2, size / 2, size / 2.2)
     canvas.fillStyle(0x2d5a27, 1)
-    canvas.fillCircle(size / 2, size * 0.3, size / 2) // hair/ears
-    canvas.fillStyle(0x8b4513, 1) // body
+    canvas.fillCircle(size / 2, size * 0.3, size / 2)
+    canvas.fillStyle(0x8b4513, 1)
     canvas.fillRect(size * 0.3, size * 0.6, size * 0.4, size * 0.35)
-    canvas.fillStyle(0x000000, 1) // eyes
+    canvas.fillStyle(0x000000, 1)
     canvas.fillCircle(size * 0.35, size * 0.35, size * 0.06)
     canvas.fillCircle(size * 0.65, size * 0.35, size * 0.06)
     canvas.generateTexture('goblin', size, size)
@@ -257,32 +484,31 @@ export default class BootScene extends Phaser.Scene {
   createLadyGhostSprite() {
     const size = 56
     const canvas = this.make.graphics({ x: 0, y: 0, add: false })
-    canvas.fillStyle(0xffd700, 0.5)
+    canvas.fillStyle(0xffd700, 0.45)
     canvas.fillCircle(size / 2, size / 2, size / 2)
-    canvas.fillStyle(0xff6b00, 0.8)
-    canvas.fillCircle(size / 2, size * 0.3, size * 0.15) // left eye
-    canvas.fillCircle(size / 2 + size * 0.3, size * 0.3, size * 0.15) // right eye
+    canvas.fillStyle(0xff6b00, 0.9)
+    canvas.fillCircle(size / 2 - size * 0.1, size * 0.32, size * 0.13)
+    canvas.fillCircle(size / 2 + size * 0.1, size * 0.32, size * 0.13)
     canvas.fillStyle(0xff0000, 1)
-    canvas.fillCircle(size / 2, size * 0.65, size * 0.1) // mischievous smile
-    // Flowing bottom
-    canvas.fillStyle(0xffd700, 0.4)
-    canvas.fillEllipse(size / 2, size, size * 0.6, size * 0.4)
+    canvas.fillEllipse(size / 2, size * 0.66, size * 0.12, size * 0.06)
+    canvas.fillStyle(0xffd700, 0.35)
+    canvas.fillEllipse(size / 2, size, size * 0.7, size * 0.45)
     canvas.generateTexture('lady-ghost', size, size)
   }
+
+  // ============================================================
+  // ENVIRONMENT
+  // ============================================================
 
   createTattooShopSprite() {
     const size = 64
     const canvas = this.make.graphics({ x: 0, y: 0, add: false })
-    // Building
     canvas.fillStyle(0x2a2a2a, 1)
     canvas.fillRect(size * 0.2, size * 0.2, size * 0.6, size * 0.6)
-    // Roof
     canvas.fillStyle(0x1a1a1a, 1)
     canvas.fillRect(size * 0.15, size * 0.1, size * 0.7, size * 0.15)
-    // Door
     canvas.fillStyle(0x4a4a4a, 1)
     canvas.fillRect(size * 0.45, size * 0.55, size * 0.1, size * 0.25)
-    // Glowing neon sign
     canvas.fillStyle(0x4ade80, 1)
     canvas.fillCircle(size * 0.5, size * 0.15, size * 0.08)
     canvas.generateTexture('tattoo-shop', size, size)
@@ -291,20 +517,16 @@ export default class BootScene extends Phaser.Scene {
   createCryptSprite() {
     const size = 64
     const canvas = this.make.graphics({ x: 0, y: 0, add: false })
-    // Crypt structure
     canvas.fillStyle(0x3a3a3a, 1)
     canvas.fillRect(size * 0.25, size * 0.2, size * 0.5, size * 0.6)
-    // Door
     canvas.fillStyle(0x1a1a1a, 1)
     canvas.fillRect(size * 0.42, size * 0.45, size * 0.16, size * 0.35)
-    // Glow
     canvas.fillStyle(0xffd700, 0.3)
     canvas.fillCircle(size * 0.5, size * 0.3, size * 0.15)
     canvas.generateTexture('exit-crypt', size, size)
   }
 
   createTileTextures() {
-    // Floor tile
     const floorSize = 32
     const floorCanvas = this.make.graphics({ x: 0, y: 0, add: false })
     floorCanvas.fillStyle(0x2d2d2d, 1)
@@ -314,7 +536,6 @@ export default class BootScene extends Phaser.Scene {
     floorCanvas.fillRect(0, floorSize - 2, floorSize, 2)
     floorCanvas.generateTexture('tile-floor', floorSize, floorSize)
 
-    // Wall tile (fence)
     const wallSize = 32
     const wallCanvas = this.make.graphics({ x: 0, y: 0, add: false })
     wallCanvas.fillStyle(0x4a4a4a, 1)
@@ -325,7 +546,6 @@ export default class BootScene extends Phaser.Scene {
     }
     wallCanvas.generateTexture('tile-wall', wallSize, wallSize)
 
-    // Hedge tile
     const hedgeSize = 32
     const hedgeCanvas = this.make.graphics({ x: 0, y: 0, add: false })
     hedgeCanvas.fillStyle(0x2d5a27, 1)
@@ -336,7 +556,6 @@ export default class BootScene extends Phaser.Scene {
     hedgeCanvas.fillCircle(16, 20, 8)
     hedgeCanvas.generateTexture('tile-hedge', hedgeSize, hedgeSize)
 
-    // Tomb tile
     const tombSize = 32
     const tombCanvas = this.make.graphics({ x: 0, y: 0, add: false })
     tombCanvas.fillStyle(0x4a4a4a, 1)
@@ -349,7 +568,6 @@ export default class BootScene extends Phaser.Scene {
   }
 
   createParticleTextures() {
-    // Sparkle particle
     const size = 8
     const canvas = this.make.graphics({ x: 0, y: 0, add: false })
     canvas.fillStyle(0xffd700, 1)
@@ -357,7 +575,6 @@ export default class BootScene extends Phaser.Scene {
     canvas.fillRect(0, size / 2 - 1, size, 2)
     canvas.generateTexture('sparkle', size, size)
 
-    // Blood splat
     const size2 = 6
     const canvas2 = this.make.graphics({ x: 0, y: 0, add: false })
     canvas2.fillStyle(0x8b0000, 1)
@@ -366,7 +583,6 @@ export default class BootScene extends Phaser.Scene {
   }
 
   createUITextures() {
-    // Heart icon
     const size = 24
     const canvas = this.make.graphics({ x: 0, y: 0, add: false })
     canvas.fillStyle(0xff0000, 1)
@@ -375,7 +591,6 @@ export default class BootScene extends Phaser.Scene {
     canvas.fillRect(size * 0.2, size * 0.35, size * 0.6, size * 0.5)
     canvas.generateTexture('ui-heart', size, size)
 
-    // Power bolt icon
     const size2 = 24
     const canvas2 = this.make.graphics({ x: 0, y: 0, add: false })
     canvas2.fillStyle(0xffd700, 1)
