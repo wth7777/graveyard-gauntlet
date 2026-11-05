@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Minimal Phaser Test</title>
+</head>
+<body>
+  <div id="diag">Loading...</div>
+  <div id="game-container"></div>
+  <script type="module">
+    import Phaser from 'phaser'
+    
+    class TestScene extends Phaser.Scene {
+      constructor() {
+        super('TestScene')
+      }
+      create() {
+        console.log('TestScene.create() ran!')
+        document.getElementById('diag').textContent = 'TestScene.create() ran!'
+        this.add.rectangle(400, 300, 100, 100, 0x00ff00)
+      }
+    }
+    
+    const config = {
+      type: Phaser.AUTO,
+      parent: 'game-container',
+      width: 800,
+      height: 600,
+      backgroundColor: '#ff0000',
+      scene: [TestScene]
+    }
+    
+    const game = new Phaser.Game(config)
+    window.game = game
+  </script>
+</body>
+</html>

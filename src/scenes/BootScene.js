@@ -16,6 +16,7 @@
  */
 
 import Phaser from 'phaser'
+import UIScene from './UIScene.js'
 
 export default class BootScene extends Phaser.Scene {
   constructor() {
@@ -66,7 +67,9 @@ export default class BootScene extends Phaser.Scene {
   }
 
   create() {
+    window._diagBootStart = true
     console.log('[BOOT] BootScene.create() - all textures generated, starting MainScene')
+    window.__diag?.setStage('diag-stage-boot', 'ok', 'BOOT: Textures ready')
     this.add.text(10, 10, 'BOOT: Textures ready -> MainScene', {
       fontSize: '14px',
       fontFamily: 'Courier New, monospace',
@@ -74,7 +77,35 @@ export default class BootScene extends Phaser.Scene {
       backgroundColor: '#000000',
       padding: { x: 4, y: 4 }
     }).setDepth(1000)
-    this.scene.start('MainScene')
+    this._started = false
+    // Start MainScene immediately — BootScene.update() is never called by Phaser,
+    // so the transition must happen here in create() rather than in update().
+    this.scene.manager.switch('BootScene', 'MainScene')
+    // Add UIScene without auto-start, then launch() it (wake + init, does NOT call create()
+    // and does NOT pause MainScene). Finally call create() manually to build HUD elements.
+    // Both scenes must be set to RUNNING explicitly because Phaser's scene manager
+    // leaves newly-added scenes in PAUSED state when started from within another scene's
+    // create() method.
+    this.scene.add('UIScene', UIScene)
+    this.scene.launch('UIScene', {
+      playerHealth: 100,
+      playerPower: 100,
+      playerMaxHealth: 100,
+      playerMaxPower: 100
+    })
+    const uiScene = this.scene.manager.getScene('UIScene')
+    uiScene.create(uiScene.sys.settings.data)
+    // Force both scenes to RUNNING so the game loop processes both
+    uiScene.sys.settings.status = 4 // CONST.RUNNING
+    const mainScene = this.scene.manager.getScene('MainScene')
+    mainScene.sys.settings.status = 4 // CONST.RUNNING
+  }
+
+  update() {
+    if (!this._started) {
+      this._started = true
+      this.scene.manager.switch('BootScene', 'MainScene')
+    }
   }
 
   // ============================================================

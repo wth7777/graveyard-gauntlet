@@ -22,6 +22,7 @@ export default class UIScene extends Phaser.Scene {
 
   create() {
     console.log('[UI] UIScene.create() starting')
+    window.__diag?.setStage('diag-stage-ui', 'ok', 'UI: Started')
     this.add.text(10, 10, 'UI: Started', {
       fontSize: '14px',
       fontFamily: 'Courier New, monospace',

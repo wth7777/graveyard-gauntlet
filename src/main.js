@@ -8,7 +8,7 @@ const config = {
   parent: 'game-container',
   width: 1280,
   height: 720,
-  backgroundColor: '#0a0a0a',
+  backgroundColor: '#000000',
   pixelArt: true,
   scale: {
     mode: Phaser.Scale.FIT,
@@ -16,7 +16,7 @@ const config = {
     min: { width: 640, height: 360 },
     max: { width: 1920, height: 1080 }
   },
-  scene: [BootScene, MainScene, UIScene],
+  scene: [BootScene, MainScene],
   physics: {
     default: 'arcade',
     arcade: {
@@ -28,5 +28,4 @@ const config = {
 
 const game = new Phaser.Game(config)
 
-// Expose for debugging
 window.game = game

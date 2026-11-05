@@ -113,7 +113,7 @@ export default class MainScene extends Phaser.Scene {
 
       this.setDiag('SHOPS')
       // ---------- SHOPS ----------
-      this.shops = this.physics.add.group()
+      this.shops = this.add.group()
       this.createShops()
 
       this.setDiag('CRYPT')
@@ -167,12 +167,8 @@ export default class MainScene extends Phaser.Scene {
 
       this.setDiag('UI')
       // ---------- UI ----------
-      this.scene.launch('UIScene', {
-        playerHealth: this.playerHealth,
-        playerPower: this.playerPower,
-        playerMaxHealth: this.playerMaxHealth,
-        playerMaxPower: this.playerMaxPower
-      })
+      // UIScene is started dynamically from BootScene.create() via scene.add().
+      // It reads player data from MainScene every frame in its update() loop.
 
       this.setDiag('DARKNESS')
       // ---------- FOG / DARKNESS ----------
@@ -323,7 +319,7 @@ export default class MainScene extends Phaser.Scene {
 
     // Create tilemap layer
     this.floorTiles = this.add.group()
-    this.walls = this.physics.add.staticGroup()
+    this.walls = this.add.group()
 
     for (let y = 0; y < rows; y++) {
       for (let x = 0; x < cols; x++) {
