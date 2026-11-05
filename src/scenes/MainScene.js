@@ -149,7 +149,7 @@ export default class MainScene extends Phaser.Scene {
       this.cameras.main.setBounds(0, 0, this.mazeCols * this.tileSize, this.mazeRows * this.tileSize)
       this.cameras.main.centerOn(this.player.x, this.player.y)
       this.cameras.main.startFollow(this.player, true, 0.08, 0.08, 0, 0)
-      this.cameras.main.setZoom(2.0)
+      this.cameras.main.setZoom(2.5)
 
       this.setDiag('INPUT')
       // ---------- INPUT ----------
