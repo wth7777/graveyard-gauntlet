@@ -458,8 +458,8 @@ export default class MainScene extends Phaser.Scene {
   }
 
   createPlayer() {
-    const spawnX = Math.floor(this.mazeCols / 2) * this.tileSize  // center of maze
-    const spawnY = Math.floor(this.mazeRows / 2) * this.tileSize  // center of maze
+    const spawnX = 11 * this.tileSize  // odd-odd: guaranteed corridor by Recursive Backtracker
+    const spawnY = 9 * this.tileSize   // odd-odd: guaranteed corridor by Recursive Backtracker
 
     this.player = this.physics.add.sprite(spawnX, spawnY, 'player-idle-front')
     this.player.setDisplaySize(24, 24)
