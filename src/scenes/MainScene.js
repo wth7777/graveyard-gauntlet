@@ -458,14 +458,13 @@ export default class MainScene extends Phaser.Scene {
   }
 
   createPlayer() {
-    const spawnX = 11 * this.tileSize  // odd-odd: guaranteed corridor by Recursive Backtracker
-    const spawnY = 9 * this.tileSize   // odd-odd: guaranteed corridor by Recursive Backtracker
+    const spawnX = 11 * this.tileSize + this.tileSize / 2  // center of corridor tile (11,9)
+    const spawnY = 9 * this.tileSize + this.tileSize / 2   // center of corridor tile (11,9)
 
     this.player = this.physics.add.sprite(spawnX, spawnY, 'player-idle-front')
     this.player.setDisplaySize(24, 24)
     this.player.setCollideWorldBounds(true)
     this.player.body.setSize(20, 20)
-    this.player.body.setOffset(10, 10)
 
     this.player.lastDir = { x: 0, y: -1 }
     this.player.walkFrame = 0
