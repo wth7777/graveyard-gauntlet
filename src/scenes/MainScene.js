@@ -146,10 +146,19 @@ export default class MainScene extends Phaser.Scene {
 
       this.setDiag('CAMERA')
       // ---------- CAMERA ----------
-      this.cameras.main.setBounds(0, 0, this.mazeCols * this.tileSize, this.mazeRows * this.tileSize)
+      this.cameras.main.setZoom(2.5)
+      // Pad camera bounds so edge spawns appear centered instead of clamped to corner
+      const cam = this.cameras.main
+      const left = this.player.x - cam.width / 2 / cam.zoom
+      const top = this.player.y - cam.height / 2 / cam.zoom
+      this.cameras.main.setBounds(
+        left,
+        top,
+        this.mazeCols * this.tileSize - left,
+        this.mazeRows * this.tileSize - top
+      )
       this.cameras.main.centerOn(this.player.x, this.player.y)
       this.cameras.main.startFollow(this.player, true, 0.08, 0.08, 0, 0)
-      this.cameras.main.setZoom(2.5)
 
       this.setDiag('INPUT')
       // ---------- INPUT ----------
