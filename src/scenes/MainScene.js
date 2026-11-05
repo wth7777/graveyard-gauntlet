@@ -422,8 +422,8 @@ export default class MainScene extends Phaser.Scene {
   }
 
   createPlayer() {
-    const spawnX = 2 * this.tileSize
-    const spawnY = 2 * this.tileSize
+    const spawnX = Math.floor(this.mazeCols / 2) * this.tileSize  // center of maze
+    const spawnY = Math.floor(this.mazeRows / 2) * this.tileSize  // center of maze
 
     this.player = this.physics.add.sprite(spawnX, spawnY, 'player-idle')
     this.player.setDisplaySize(40, 40)
@@ -450,12 +450,12 @@ export default class MainScene extends Phaser.Scene {
     )
     this.darkness.setOrigin(0, 0)
     this.darkness.setDepth(50)
+    this.darkness.setAlpha(0.6)  // Phase 3: darkness visible
 
-    // Light mask — use a bright circle instead of ERASE
-    // We'll tint the darkness down around the player by adjusting alpha
-    // Simple approach: just keep a moderate darkness that doesn't obscure everything
-    this.lightMask = this.add.circle(0, 0, this.lightRadius, 0xffffff, 0)
+    // Light mask — circular light around player that cuts hole in darkness
+    this.lightMask = this.add.circle(0, 0, this.lightRadius, 0xffffff, 1)
     this.lightMask.setDepth(51)
+    this.lightMask.setBlendMode(Phaser.BlendModes.ERASE)
   }
 
   // ---------- PLAYER CONTROL ----------
@@ -924,10 +924,9 @@ export default class MainScene extends Phaser.Scene {
       if (dist > 150) {
         const type = Math.random() > 0.5 ? 'ghost' : 'goblin'
         const texture = type === 'ghost' ? 'ghost' : 'goblin'
-        const enemy = this.add.sprite(x, y, texture)
+        const enemy = this.physics.add.sprite(x, y, texture)
         enemy.setOrigin(0.5, 0.5)
         enemy.setDisplaySize(32, 32)
-        this.physics.add.existing(enemy)
         enemy.type = type
         enemy.speed = type === 'ghost' ? 60 : 90
         enemy.health = type === 'ghost' ? 30 : 40
