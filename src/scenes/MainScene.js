@@ -56,6 +56,14 @@ export default class MainScene extends Phaser.Scene {
     this.prankType = null
     this.prankEndTime = 0
 
+    // V2 Environmental sprites
+    this.envSprites = null
+    this.lanternGlows = null
+    this.trees = null
+    this.tombstones = null
+    this.fences = null
+    this.lanterns = null
+
     // Fog of war / darkness
     this.darkness = null
     this.lightRadius = 180
@@ -389,16 +397,19 @@ export default class MainScene extends Phaser.Scene {
         const wx = x * this.tileSize
         const wy = y * this.tileSize
         if (this.maze[y][x] === 0) {
-          const floor = this.add.sprite(wx, wy, 'tile-floor')
+          // V2: Randomize among grass variants for natural variation
+          const grassRoll = Math.random()
+          let floorTex = 'tile-grass-deep'
+          if (grassRoll > 0.25) floorTex = 'tile-grass-lush'
+          if (grassRoll > 0.5) floorTex = 'tile-grass-shadow'
+          if (grassRoll > 0.75) floorTex = 'tile-grass-mossy'
+
+          const floor = this.add.sprite(wx, wy, floorTex)
           floor.setOrigin(0, 0)
           this.floorTiles.add(floor)
         } else {
-          const roll = Math.random()
-          let texture = 'tile-wall'
-          if (roll > 0.7) texture = 'tile-hedge'
-          if (roll > 0.85) texture = 'tile-tomb'
-
-          const wall = this.add.sprite(wx, wy, texture)
+          // V2: Use handcrafted cobblestone for walls
+          const wall = this.add.sprite(wx, wy, 'tile-cobblestone')
           wall.setOrigin(0, 0)
           this.physics.add.existing(wall, true)
           this.walls.add(wall)
@@ -406,6 +417,160 @@ export default class MainScene extends Phaser.Scene {
       }
     }
 
+    // ---------- V2 ENVIRONMENTAL SPRITES ----------
+    this.createEnvironmentalSprites()
+  }
+
+  // ---------- V2 ENVIRONMENTAL SPRITES ----------
+  createEnvironmentalSprites() {
+    const cols = this.mazeCols
+    const rows = this.mazeRows
+    const ts = this.tileSize
+
+    this.envSprites = this.add.group()
+    this.lanternGlows = this.add.group()
+    this.trees = []
+    this.tombstones = []
+    this.fences = []
+    this.lanterns = []
+
+    // ---------- MAUSOLEUM ----------
+    // Imposing structure at top-right, away from spawn and exit
+    const mausTx = 26
+    const mausTy = 4
+    this.mausoleum = this.add.sprite(
+      mausTx * ts + 96,
+      mausTy * ts + 176,
+      'struct-mausoleum'
+    )
+    this.mausoleum.setOrigin(0.5, 1.0)
+    this.mausoleum.setDepth(15)
+    this.envSprites.add(this.mausoleum)
+
+    // ---------- TREES ----------
+    // Large twisted trees at four corners
+    const treePositions = [
+      { tx: 2, ty: 2 },
+      { tx: cols - 3, ty: 2 },
+      { tx: 2, ty: rows - 3 },
+      { tx: cols - 3, ty: rows - 3 },
+    ]
+    for (const pos of treePositions) {
+      const tree = this.add.sprite(
+        pos.tx * ts + 80,
+        pos.ty * ts + 180,
+        'foliage-tree-large'
+      )
+      tree.setOrigin(0.5, 1.0)
+      tree.setDepth(10)
+      this.envSprites.add(tree)
+      this.trees.push(tree)
+    }
+
+    // ---------- TOMBSTONES ----------
+    // Scattered on floor tiles, avoiding spawn, exit, and mausoleum
+    const tombstoneTypes = [
+      'prop-tombstone-classic',
+      'prop-tombstone-cross',
+      'prop-tombstone-obelisk',
+      'prop-tombstone-broken',
+    ]
+    const placedTombs = []
+    for (let i = 0; i < 12; i++) {
+      let attempts = 0
+      let placed = false
+      while (!placed && attempts < 50) {
+        const x = Phaser.Math.Between(3, cols - 4)
+        const y = Phaser.Math.Between(3, rows - 4)
+        if (this.maze[y][x] !== 0) { attempts++; continue }
+        if (Math.abs(x - 1) < 3 && Math.abs(y - 1) < 3) { attempts++; continue }
+        if (Math.abs(x - 22) < 3 && Math.abs(y - 16) < 3) { attempts++; continue }
+        if (x >= 24 && x <= 30 && y >= 2 && y <= 9) { attempts++; continue }
+        let tooClose = false
+        for (const p of placedTombs) {
+          if (Math.abs(x - p.x) < 4 && Math.abs(y - p.y) < 4) { tooClose = true; break }
+        }
+        if (tooClose) { attempts++; continue }
+        const tex = tombstoneTypes[Phaser.Math.Between(0, tombstoneTypes.length - 1)]
+        const tomb = this.add.sprite(
+          x * ts + 16,
+          y * ts + 32,
+          tex
+        )
+        tomb.setOrigin(0.5, 1.0)
+        tomb.setDepth(5)
+        this.envSprites.add(tomb)
+        this.tombstones.push(tomb)
+        placedTombs.push({ x, y })
+        placed = true
+      }
+    }
+
+    // ---------- FENCING ----------
+    // Along boundary walls
+    for (let x = 2; x < cols - 2; x += 2) {
+      if (this.maze[1][x] === 1) {
+        const fence = this.add.sprite(x * ts + 32, 1 * ts + 28, 'prop-fence-section')
+        fence.setOrigin(0.5, 1.0)
+        fence.setDepth(8)
+        this.envSprites.add(fence)
+        this.fences.push(fence)
+      }
+      if (this.maze[rows - 2][x] === 1) {
+        const fence = this.add.sprite(x * ts + 32, (rows - 2) * ts + 28, 'prop-fence-section')
+        fence.setOrigin(0.5, 1.0)
+        fence.setDepth(8)
+        this.envSprites.add(fence)
+        this.fences.push(fence)
+      }
+    }
+
+    // ---------- LANTERNS WITH GLOW ----------
+    const lanternPositions = [
+      { tx: 26, ty: 8 },
+      { tx: 30, ty: 8 },
+      { tx: 10, ty: 2 },
+      { tx: cols - 3, ty: 2 },
+    ]
+    for (const pos of lanternPositions) {
+      if (this.maze[pos.ty][pos.tx] !== 0) continue
+      const lantern = this.add.sprite(
+        pos.tx * ts + 28,
+        pos.ty * ts + 84,
+        'light-lantern-post'
+      )
+      lantern.setOrigin(0.5, 1.0)
+      lantern.setDepth(20)
+      this.envSprites.add(lantern)
+      this.lanterns.push(lantern)
+      // Glow layer — additive blend
+      const glow = this.add.sprite(
+        pos.tx * ts + 28,
+        pos.ty * ts + 80,
+        'light-lantern-post-glow'
+      )
+      glow.setOrigin(0.5, 1.0)
+      glow.setDepth(22)
+      glow.setBlendMode(Phaser.BlendModes.ADD)
+      this.lanternGlows.add(glow)
+    }
+
+    // ---------- FOG PATCHES ----------
+    // Layered fog at low depth — doesn't obscure gameplay
+    const fogPositions = [
+      { x: 2 * ts, y: 30 * ts, tex: 'light-fog-large' },
+      { x: 40 * ts, y: 32 * ts, tex: 'light-fog-medium' },
+      { x: 2 * ts, y: 6 * ts, tex: 'light-fog-small' },
+      { x: 45 * ts, y: 8 * ts, tex: 'light-fog-small' },
+      { x: 22 * ts, y: 34 * ts, tex: 'light-fog-medium' },
+    ]
+    for (const fog of fogPositions) {
+      const f = this.add.sprite(fog.x, fog.y, fog.tex)
+      f.setOrigin(0, 1)
+      f.setDepth(1)
+      f.setAlpha(0.7)
+      this.envSprites.add(f)
+    }
   }
 
   createShops() {
@@ -977,6 +1142,14 @@ export default class MainScene extends Phaser.Scene {
         enemy.setRotation(angle)
       }
     })
+
+    // ---------- V2 LANTERN GLOW FLICKER ----------
+    if (this.lanternGlows) {
+      const pulse = 0.6 + 0.4 * Math.sin(this.time.now * 0.003)
+      this.lanternGlows.getChildren().forEach(glow => {
+        glow.setAlpha(pulse)
+      })
+    }
 
     // ---------- WIN CHECK ----------
     if (this.player && !this.gameWon) {

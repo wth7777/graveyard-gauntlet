@@ -51,6 +51,60 @@ export default class BootScene extends Phaser.Scene {
       progressBar.destroy()
     })
 
+    // ---------- STAGE 1: PREMIUM TERRAIN TILES (V1) ----------
+    // Load handcrafted pixel-art terrain (32x32). Procedural textures
+    // in createTileTextures() remain as fallbacks if images fail to load.
+    this.load.image('tile-grass-base',   'assets/images/tiles/grass-base.png')
+    this.load.image('tile-grass-var-a',  'assets/images/tiles/grass-var-a.png')
+    this.load.image('tile-grass-var-b',  'assets/images/tiles/grass-var-b.png')
+    this.load.image('tile-grass-var-c',  'assets/images/tiles/grass-var-c.png')
+    this.load.image('tile-dirt-path',    'assets/images/tiles/dirt-path.png')
+    this.load.image('tile-cobblestone-path', 'assets/images/tiles/cobblestone-path.png')
+    this.load.image('tile-stone-floor',  'assets/images/tiles/stone-floor.png')
+    this.load.image('tile-wall-stone',   'assets/images/tiles/wall-stone.png')
+    this.load.image('tile-hedge-dense',  'assets/images/tiles/hedge-dense.png')
+    this.load.image('tile-tomb-crypt',   'assets/images/tiles/tomb-crypt.png')
+
+    // ---------- STAGE 2: V2 PREMIUM TERRAIN TILES ----------
+    // Handcrafted V2 terrain (32x32) with intentional pixel clusters.
+    this.load.image('tile-grass-deep',   'assets/images/tiles/v2/grass_deep.png')
+    this.load.image('tile-grass-lush',   'assets/images/tiles/v2/grass_lush.png')
+    this.load.image('tile-grass-shadow', 'assets/images/tiles/v2/grass_shadow.png')
+    this.load.image('tile-grass-mossy',  'assets/images/tiles/v2/grass_mossy.png')
+    this.load.image('tile-dirt-path-h',  'assets/images/tiles/v2/dirt_path_h.png')
+    this.load.image('tile-dirt-path-v',  'assets/images/tiles/v2/dirt_path_v.png')
+    this.load.image('tile-dirt-corner-tl', 'assets/images/tiles/v2/dirt_corner_tl.png')
+    this.load.image('tile-dirt-corner-tr', 'assets/images/tiles/v2/dirt_corner_tr.png')
+    this.load.image('tile-dirt-corner-bl', 'assets/images/tiles/v2/dirt_corner_bl.png')
+    this.load.image('tile-dirt-corner-br', 'assets/images/tiles/v2/dirt_corner_br.png')
+    this.load.image('tile-cobblestone',  'assets/images/tiles/v2/cobblestone.png')
+    this.load.image('tile-stone-floor-v2', 'assets/images/tiles/v2/stone_floor.png')
+
+    // ---------- STAGE 2: V2 ENVIRONMENTAL PROPS ----------
+    this.load.image('prop-tombstone-classic', 'assets/images/props/v2/tombstone_classic.png')
+    this.load.image('prop-tombstone-cross',   'assets/images/props/v2/tombstone_cross.png')
+    this.load.image('prop-tombstone-obelisk', 'assets/images/props/v2/tombstone_obelisk.png')
+    this.load.image('prop-tombstone-broken',  'assets/images/props/v2/tombstone_broken.png')
+    this.load.image('prop-fence-section',     'assets/images/props/v2/fence_section.png')
+    this.load.image('prop-fence-gate',        'assets/images/props/v2/fence_gate.png')
+
+    // ---------- STAGE 2: V2 STRUCTURES ----------
+    this.load.image('struct-mausoleum', 'assets/images/structures/v2/mausoleum.png')
+
+    // ---------- STAGE 2: V2 FOLIAGE ----------
+    this.load.image('foliage-tree-large', 'assets/images/foliage/v2/tree_large.png')
+
+    // ---------- STAGE 2: V2 LIGHTING & ATMOSPHERE ----------
+    this.load.image('light-lantern-post',       'assets/images/lighting/v2/lantern_post.png')
+    this.load.image('light-lantern-post-glow',  'assets/images/lighting/v2/lantern_post_glow.png')
+    this.load.image('light-lantern-hanging',    'assets/images/lighting/v2/lantern_hanging.png')
+    this.load.image('light-lantern-hanging-glow','assets/images/lighting/v2/lantern_hanging_glow.png')
+    this.load.image('light-fog-small',          'assets/images/lighting/v2/fog_small.png')
+    this.load.image('light-fog-medium',         'assets/images/lighting/v2/fog_medium.png')
+    this.load.image('light-fog-large',          'assets/images/lighting/v2/fog_large.png')
+    this.load.image('light-firefly',            'assets/images/lighting/v2/firefly.png')
+    this.load.image('light-moth',               'assets/images/lighting/v2/moth.png')
+
     // ---------- PROCEDURAL CHARACTER GRAPHICS ----------
     // Based on cousin's photos. Replace with real images in assets/images/.
 
