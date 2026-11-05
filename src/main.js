@@ -16,7 +16,7 @@ const config = {
     min: { width: 640, height: 360 },
     max: { width: 1920, height: 1080 }
   },
-  scene: [BootScene, MainScene],
+  scene: [BootScene, MainScene, UIScene],
   physics: {
     default: 'arcade',
     arcade: {

@@ -149,7 +149,7 @@ export default class MainScene extends Phaser.Scene {
       this.cameras.main.setBounds(0, 0, this.mazeCols * this.tileSize, this.mazeRows * this.tileSize)
       this.cameras.main.centerOn(this.player.x, this.player.y)
       this.cameras.main.startFollow(this.player, true, 0.08, 0.08, 0, -40)
-      this.cameras.main.setZoom(3.0)
+      this.cameras.main.setZoom(1.5)
 
       this.setDiag('INPUT')
       // ---------- INPUT ----------
@@ -321,16 +321,7 @@ export default class MainScene extends Phaser.Scene {
         const nx = current.x + dx
         const ny = current.y + dy
         if (nx > 0 && nx < cols - 1 && ny > 0 && ny < rows - 1 && this.maze[ny][nx] === 1) {
-          let unvisited = true
-          for (const [dx2, dy2] of dirs) {
-            const nnx = nx + dx2
-            const nny = ny + dy2
-            if (nnx > 0 && nnx < cols - 1 && nny > 0 && nny < rows - 1 && this.maze[nny][nnx] === 0) {
-              unvisited = false
-              break
-            }
-          }
-          if (unvisited) neighbors.push({ x: nx, y: ny, wx: current.x + dx / 2, wy: current.y + dy / 2 })
+          neighbors.push({ x: nx, y: ny, wx: current.x + dx / 2, wy: current.y + dy / 2 })
         }
       }
 
@@ -344,12 +335,28 @@ export default class MainScene extends Phaser.Scene {
       }
     }
 
-    // Add extra openings
-    for (let i = 0; i < 15; i++) {
-      const x = Phaser.Math.Between(1, cols - 2)
-      const y = Phaser.Math.Between(1, rows - 2)
-      if (this.maze[y][x] === 1) {
-        this.maze[y][x] = 0
+    // Guarantee exit connectivity: carve a corridor from the nearest floor cell to the exit
+    const exitX = this.mazeCols - 3
+    const exitY = this.mazeRows - 3
+    let nearestX = null, nearestY = null, nearestDist = Infinity
+    for (let y = 1; y < rows - 1; y++) {
+      for (let x = 1; x < cols - 1; x++) {
+        if (this.maze[y][x] === 0) {
+          const d = Math.abs(x - exitX) + Math.abs(y - exitY)
+          if (d < nearestDist) {
+            nearestDist = d
+            nearestX = x
+            nearestY = y
+          }
+        }
+      }
+    }
+    if (nearestX !== null) {
+      for (let x = Math.min(nearestX, exitX); x <= Math.max(nearestX, exitX); x++) {
+        if (x > 0 && x < cols - 1 && exitY > 0 && exitY < rows - 1) this.maze[exitY][x] = 0
+      }
+      for (let y = Math.min(nearestY, exitY); y <= Math.max(nearestY, exitY); y++) {
+        if (nearestX > 0 && nearestX < cols - 1 && y > 0 && y < rows - 1) this.maze[y][nearestX] = 0
       }
     }
 

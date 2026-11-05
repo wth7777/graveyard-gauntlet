@@ -86,12 +86,12 @@ export default class BootScene extends Phaser.Scene {
     // Both scenes must be set to RUNNING explicitly because Phaser's scene manager
     // leaves newly-added scenes in PAUSED state when started from within another scene's
     // create() method.
-    this.scene.add('UIScene', UIScene)
     this.scene.launch('UIScene', {
       playerHealth: 100,
       playerPower: 100,
       playerMaxHealth: 100,
-      playerMaxPower: 100
+      playerMaxPower: 100,
+      score: 0
     })
     const uiScene = this.scene.manager.getScene('UIScene')
     uiScene.create(uiScene.sys.settings.data)
