@@ -357,6 +357,17 @@ export default class MainScene extends Phaser.Scene {
     this.floorTiles = this.add.group()
     this.walls = this.add.group()
 
+    // Ensure start area is clear BEFORE wall bodies are created
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        const x = startX + dx
+        const y = startY + dy
+        if (x > 0 && x < cols - 1 && y > 0 && y < rows - 1) {
+          this.maze[y][x] = 0
+        }
+      }
+    }
+
     for (let y = 0; y < rows; y++) {
       for (let x = 0; x < cols; x++) {
         const wx = x * this.tileSize
@@ -379,16 +390,6 @@ export default class MainScene extends Phaser.Scene {
       }
     }
 
-    // Ensure start area is clear
-    for (let dy = -1; dy <= 1; dy++) {
-      for (let dx = -1; dx <= 1; dx++) {
-        const x = startX + dx
-        const y = startY + dy
-        if (x > 0 && x < cols - 1 && y > 0 && y < rows - 1) {
-          this.maze[y][x] = 0
-        }
-      }
-    }
   }
 
   createShops() {
@@ -458,8 +459,8 @@ export default class MainScene extends Phaser.Scene {
   }
 
   createPlayer() {
-    const spawnX = 11 * this.tileSize + this.tileSize / 2  // center of corridor tile (11,9)
-    const spawnY = 9 * this.tileSize + this.tileSize / 2   // center of corridor tile (11,9)
+    const spawnX = 1 * this.tileSize + this.tileSize / 2   // center of open tile (1,1)
+    const spawnY = 1 * this.tileSize + this.tileSize / 2   // center of open tile (1,1)
 
     this.player = this.physics.add.sprite(spawnX, spawnY, 'player-idle-front')
     this.player.setDisplaySize(24, 24)
