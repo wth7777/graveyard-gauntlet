@@ -148,7 +148,7 @@ export default class MainScene extends Phaser.Scene {
       // ---------- CAMERA ----------
       this.cameras.main.startFollow(this.player, true, 0.1, 0.1)
       this.cameras.main.setBounds(0, 0, this.mazeCols * this.tileSize, this.mazeRows * this.tileSize)
-      this.cameras.main.setZoom(1.5)
+      this.cameras.main.setZoom(2.5)
 
       this.setDiag('INPUT')
       // ---------- INPUT ----------
@@ -450,10 +450,10 @@ export default class MainScene extends Phaser.Scene {
     )
     this.darkness.setOrigin(0, 0)
     this.darkness.setDepth(50)
-    this.darkness.setAlpha(0.6)  // Phase 3: darkness visible
+    this.darkness.setAlpha(0)  // Phase 1A: darkness disabled for baseline visibility test
 
     // Light mask — circular light around player that cuts hole in darkness
-    this.lightMask = this.add.circle(0, 0, this.lightRadius, 0xffffff, 1)
+    this.lightMask = this.add.circle(0, 0, this.lightRadius, 0xffffff, 0)  // Phase 1A: light mask disabled for baseline
     this.lightMask.setDepth(51)
     this.lightMask.setBlendMode(Phaser.BlendModes.ERASE)
   }
