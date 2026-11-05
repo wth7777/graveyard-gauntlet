@@ -146,9 +146,9 @@ export default class MainScene extends Phaser.Scene {
 
       this.setDiag('CAMERA')
       // ---------- CAMERA ----------
-      this.cameras.main.startFollow(this.player, true, 0.1, 0.1)
+      this.cameras.main.startFollow(this.player, true, 0.1, 0.1, -0, -40)
       this.cameras.main.setBounds(0, 0, this.mazeCols * this.tileSize, this.mazeRows * this.tileSize)
-      this.cameras.main.setZoom(2.5)
+      this.cameras.main.setZoom(3.0)
 
       this.setDiag('INPUT')
       // ---------- INPUT ----------
@@ -164,6 +164,37 @@ export default class MainScene extends Phaser.Scene {
         if (pointer.leftButtonDown()) this.tryAttack()
         else if (pointer.rightButtonDown()) this.tryInteract()
       })
+
+      // ---------- TOUCH CONTROLS ----------
+      this.touch = {
+        up: false,
+        down: false,
+        left: false,
+        right: false,
+        attack: false,
+        interact: false
+      }
+
+      // Touch control buttons are created in index.html as HTML elements
+      const setupTouch = (id, key) => {
+        const el = document.getElementById(id)
+        if (!el) return
+        const start = () => { this.touch[key] = true }
+        const end = () => { this.touch[key] = false }
+        el.addEventListener('touchstart', (e) => { e.preventDefault(); start() }, { passive: false })
+        el.addEventListener('touchend', end)
+        el.addEventListener('touchcancel', end)
+        el.addEventListener('mousedown', (e) => { e.preventDefault(); start() })
+        el.addEventListener('mouseup', end)
+        el.addEventListener('mouseleave', end)
+      }
+
+      setupTouch('btn-up', 'up')
+      setupTouch('btn-down', 'down')
+      setupTouch('btn-left', 'left')
+      setupTouch('btn-right', 'right')
+      setupTouch('btn-attack', 'attack')
+      setupTouch('btn-interact', 'interact')
 
       this.setDiag('UI')
       // ---------- UI ----------
@@ -794,7 +825,9 @@ export default class MainScene extends Phaser.Scene {
     const isMoving = this.cursors.left.isDown || this.cursors.right.isDown ||
                      this.cursors.up.isDown || this.cursors.down.isDown ||
                      this.wasd.W.isDown || this.wasd.A.isDown ||
-                     this.wasd.S.isDown || this.wasd.D.isDown
+                     this.wasd.S.isDown || this.wasd.D.isDown ||
+                     this.touch.left || this.touch.right ||
+                     this.touch.up || this.touch.down
 
     let drainRate = this.powerDrainRate * dtSec
     if (this.player.attacking) drainRate += this.powerAttackDrain * dtSec
@@ -818,10 +851,10 @@ export default class MainScene extends Phaser.Scene {
       let vx = 0
       let vy = 0
 
-      if (this.cursors.left.isDown || this.wasd.A.isDown) { vx = -1; this.player.lastDir = { x: -1, y: 0 } }
-      if (this.cursors.right.isDown || this.wasd.D.isDown) { vx = 1; this.player.lastDir = { x: 1, y: 0 } }
-      if (this.cursors.up.isDown || this.wasd.W.isDown) { vy = -1; this.player.lastDir = { x: 0, y: -1 } }
-      if (this.cursors.down.isDown || this.wasd.S.isDown) { vy = 1; this.player.lastDir = { x: 0, y: 1 } }
+      if (this.cursors.left.isDown || this.wasd.A.isDown || this.touch.left) { vx = -1; this.player.lastDir = { x: -1, y: 0 } }
+      if (this.cursors.right.isDown || this.wasd.D.isDown || this.touch.right) { vx = 1; this.player.lastDir = { x: 1, y: 0 } }
+      if (this.cursors.up.isDown || this.wasd.W.isDown || this.touch.up) { vy = -1; this.player.lastDir = { x: 0, y: -1 } }
+      if (this.cursors.down.isDown || this.wasd.S.isDown || this.touch.down) { vy = 1; this.player.lastDir = { x: 0, y: 1 } }
 
       const len = Math.sqrt(vx * vx + vy * vy)
       if (len > 0) {
@@ -841,6 +874,16 @@ export default class MainScene extends Phaser.Scene {
       } else {
         this.player.setTexture('player-idle')
       }
+    }
+
+    // ---------- TOUCH ATTACK / INTERACT ----------
+    if (this.touch.attack) {
+      this.touch.attack = false
+      this.tryAttack()
+    }
+    if (this.touch.interact) {
+      this.touch.interact = false
+      this.tryInteract()
     }
 
     // ---------- INVULNERABILITY ----------
