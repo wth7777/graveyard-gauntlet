@@ -113,265 +113,261 @@ export default class BootScene extends Phaser.Scene {
   // ============================================================
 
   createPlayerSprite() {
-    const size = 48
-    const canvas = this.make.graphics({ x: 0, y: 0, add: false })
+    const size = 48;
+    const skin = 0xe8c39e;
+    const beard = 0xf0f0f0;
+    const black = 0x1a1a1a;
+    const white = 0xffffff;
+    const gold = 0xffd700;
+    const jeans = 0x4a6fa5;
+    const tat = 0x2a2a2a;
 
-    // ---------- HEAD ----------
-    // Skin tone
-    canvas.fillStyle(0xe8c39e, 1)
-    canvas.fillCircle(size / 2, size / 2, size / 2.3) // head
+    // Helper: draw head (front view)
+    const drawHeadFront = (c) => {
+      c.fillStyle(skin);
+      c.fillCircle(size / 2, size * 0.26, size / 2.4); // head
+      c.fillStyle(black);
+      c.fillCircle(size / 2, size * 0.18, size / 2.2); // cap dome
+      c.fillRect(size * 0.12, size * 0.26, size * 0.76, size * 0.08); // cap brim
+      c.fillStyle(gold);
+      c.fillCircle(size / 2, size * 0.20, size * 0.08); // cap logo
+      // Face: eyes
+      c.fillStyle(black);
+      c.fillRect(size * 0.38, size * 0.23, size * 0.03, size * 0.03);
+      c.fillRect(size * 0.59, size * 0.23, size * 0.03, size * 0.03);
+      c.fillRect(size * 0.48, size * 0.26, size * 0.04, size * 0.02); // nose
+      // Beard
+      c.fillStyle(beard);
+      c.fillCircle(size / 2, size * 0.60, size / 2.8);
+      c.fillStyle(skin);
+      c.fillRect(size * 0.28, size * 0.48, size * 0.44, size * 0.16); // chin bridge
+      c.fillStyle(beard);
+      c.fillEllipse(size / 2, size * 0.46, size * 0.14, size * 0.05); // mustache
+    };
 
-    // Black baseball cap
-    canvas.fillStyle(0x1a1a1a, 1)
-    canvas.fillCircle(size / 2, size * 0.28, size / 2.1) // cap dome
-    canvas.fillRect(size * 0.15, size * 0.28, size * 0.7, size * 0.12) // cap brim
-    // Cap logo (yellow/gold)
-    canvas.fillStyle(0xffd700, 1)
-    canvas.fillCircle(size / 2, size * 0.22, size * 0.08)
+    // Helper: draw head (back view)
+    const drawHeadBack = (c) => {
+      c.fillStyle(skin);
+      c.fillCircle(size / 2, size * 0.26, size / 2.4); // head
+      c.fillStyle(black);
+      c.fillCircle(size / 2, size * 0.18, size / 2.2); // cap dome (from behind)
+      c.fillRect(size * 0.12, size * 0.24, size * 0.76, size * 0.06); // cap brim
+      c.fillStyle(gold);
+      c.fillCircle(size / 2, size * 0.19, size * 0.08); // cap logo
+    };
 
-    // Black glasses
-    canvas.lineStyle(3, 0x1a1a1a, 1)
-    canvas.lineBetween(size * 0.3, size * 0.32, size * 0.22, size * 0.34)
-    canvas.lineBetween(size * 0.7, size * 0.32, size * 0.78, size * 0.34)
-    canvas.fillRect(size * 0.2, size * 0.3, size * 0.6, size * 0.06)
+    // Helper: draw head (side view)
+    const drawHeadSide = (c, facingRight) => {
+      const cx = facingRight ? size * 0.62 : size * 0.38;
+      c.fillStyle(skin);
+      c.fillCircle(cx, size * 0.30, size / 2.6); // head
+      c.fillStyle(black);
+      c.fillCircle(cx, size * 0.20, size / 2.4); // cap dome
+      c.fillRect(cx - size * 0.12, size * 0.26, size * 0.10, size * 0.08); // cap brim
+      c.fillStyle(gold);
+      c.fillCircle(cx, size * 0.23, size * 0.08); // cap logo
+      // Face: eye
+      c.fillStyle(black);
+      c.fillRect(cx - (facingRight ? 0.02 : -0.05) * size, size * 0.27, size * 0.025, size * 0.025);
+      // Beard stub
+      c.fillStyle(beard);
+      c.fillCircle(cx, size * 0.38, size / 3.0);
+    };
 
-    // White/gray full beard
-    canvas.fillStyle(0xf0f0f0, 1)
-    canvas.fillCircle(size / 2, size * 0.62, size / 2.6) // beard mass
-    canvas.fillStyle(0xe8c39e, 1)
-    canvas.fillRect(size * 0.25, size * 0.45, size * 0.5, size * 0.25) // chin/neck bridge
+    // Helper: draw torso (front/back)
+    const drawTorso = (c) => {
+      c.fillStyle(black);
+      c.fillRect(size * 0.22, size * 0.52, size * 0.56, size * 0.34); // torso
+      c.fillStyle(white);
+      c.fillRect(size * 0.18, size * 0.50, size * 0.06, size * 0.38); // left strap
+      c.fillRect(size * 0.76, size * 0.50, size * 0.06, size * 0.38); // right strap
+      c.fillRect(size * 0.18, size * 0.50, size * 0.64, size * 0.05); // neck trim
+      // Logo
+      c.lineStyle(2, white);
+      c.strokeCircle(size / 2, size * 0.64, size * 0.10);
+      c.fillStyle(white);
+      c.fillCircle(size / 2, size * 0.64, size * 0.04);
+      c.fillRect(size * 0.44, size * 0.66, size * 0.12, size * 0.02); // crossbar
+    };
 
-    // Mustache (white)
-    canvas.fillStyle(0xf0f0f0, 1)
-    canvas.fillEllipse(size / 2, size * 0.42, size * 0.18, size * 0.08)
+    // Helper: draw torso (side)
+    const drawTorsoSide = (c, facingRight) => {
+      const cx = facingRight ? size * 0.62 : size * 0.38;
+      c.fillStyle(black);
+      c.fillRect(cx - size * 0.06, size * 0.50, size * 0.12, size * 0.22); // torso
+      c.fillStyle(white);
+      c.fillRect(cx - size * 0.04, size * 0.50, size * 0.03, size * 0.20); // strap
+      // Logo
+      c.lineStyle(1, white);
+      c.strokeCircle(cx, size * 0.62, size * 0.06);
+      c.fillStyle(white);
+      c.fillCircle(cx, size * 0.62, size * 0.02);
+    };
 
-    // ---------- BODY ----------
-    // Black tank top with white trim
-    canvas.fillStyle(0x1a1a1a, 1)
-    canvas.fillRect(size * 0.22, size * 0.52, size * 0.56, size * 0.42) // torso
-    canvas.fillStyle(0xffffff, 1)
-    canvas.fillRect(size * 0.18, size * 0.5, size * 0.08, size * 0.45) // left strap
-    canvas.fillRect(size * 0.74, size * 0.5, size * 0.08, size * 0.45) // right strap
-    canvas.fillRect(size * 0.18, size * 0.5, size * 0.64, size * 0.06) // neck trim
+    // Helper: draw arms (front)
+    const drawArmsFront = (c) => {
+      c.fillStyle(skin);
+      c.fillRect(size * 0.04, size * 0.55, size * 0.16, size * 0.28); // left arm
+      c.fillRect(size * 0.80, size * 0.55, size * 0.16, size * 0.28); // right arm
+      // Tattoos
+      c.fillStyle(tat);
+      c.fillRect(size * 0.07, size * 0.60, size * 0.10, size * 0.10);
+      c.fillRect(size * 0.07, size * 0.72, size * 0.10, size * 0.07);
+      c.fillRect(size * 0.83, size * 0.60, size * 0.10, size * 0.10);
+      c.fillRect(size * 0.83, size * 0.72, size * 0.10, size * 0.07);
+      // Hands
+      c.fillStyle(skin);
+      c.fillCircle(size * 0.12, size * 0.86, size / 16);
+      c.fillCircle(size * 0.88, size * 0.86, size / 16);
+      c.fillStyle(0xc0c0c0);
+      c.fillRect(size * 0.10, size * 0.84, size * 0.03, size * 0.02);
+      c.fillRect(size * 0.87, size * 0.84, size * 0.03, size * 0.02);
+    };
 
-    // Sullen Art Collective logo (chest circle)
-    canvas.lineStyle(2, 0xffffff, 1)
-    canvas.strokeCircle(size / 2, size * 0.68, size * 0.12)
-    canvas.fillStyle(0xffffff, 1)
-    canvas.fillCircle(size / 2, size * 0.68, size * 0.05) // skull center
-    canvas.fillRect(size * 0.45, size * 0.64, size * 0.1, size * 0.03) // crossbar
+    // Helper: draw legs (front)
+    const drawLegs = (c, legFrame) => {
+      c.fillStyle(jeans);
+      const leftX = legFrame === 1 ? size * 0.32 : size * 0.30;
+      const rightX = legFrame === 2 ? size * 0.52 : size * 0.50;
+      c.fillRect(leftX, size * 0.86, size * 0.12, size * 0.12);
+      c.fillRect(rightX, size * 0.86, size * 0.12, size * 0.12);
+    };
 
-    // Silver chain necklace
-    canvas.lineStyle(1, 0xc0c0c0, 1)
-    canvas.lineBetween(size * 0.4, size * 0.45, size * 0.6, size * 0.45)
-    // Skull pendant
-    canvas.fillStyle(0xc0c0c0, 1)
-    canvas.fillCircle(size / 2, size * 0.58, size * 0.04)
+    // Helper: draw legs (side)
+    const drawLegsSide = (c, legFrame) => {
+      c.fillStyle(jeans);
+      const x = legFrame === 1 ? size * 0.45 : size * 0.48;
+      c.fillRect(x, size * 0.84, size * 0.10, size * 0.14);
+      c.fillRect(x + size * 0.04, size * 0.84, size * 0.10, size * 0.14);
+    };
 
-    // ---------- ARMS WITH TATTOOS ----------
-    // Left arm (viewer's right) - heavy tattoos including MEMENTO MORI
-    canvas.fillStyle(0xe8c39e, 1)
-    canvas.fillRect(size * 0.05, size * 0.55, size * 0.18, size * 0.3) // arm
-    canvas.fillStyle(0x2a2a2a, 0.6)
-    canvas.fillRect(size * 0.08, size * 0.6, size * 0.12, size * 0.15) // tattoo block
-    canvas.fillRect(size * 0.08, size * 0.75, size * 0.12, size * 0.1) // tattoo block
+    // ---------- FRONT VIEW ----------
+    const cf = this.make.graphics({ x: 0, y: 0, add: false });
+    drawHeadFront(cf);
+    drawTorso(cf);
+    drawArmsFront(cf);
+    drawLegs(cf, 0);
+    cf.generateTexture('player-idle-front', size, size);
 
-    // Right arm (viewer's left) - tattoos
-    canvas.fillStyle(0xe8c39e, 1)
-    canvas.fillRect(size * 0.77, size * 0.55, size * 0.18, size * 0.3) // arm
-    canvas.fillStyle(0x2a2a2a, 0.6)
-    canvas.fillRect(size * 0.8, size * 0.6, size * 0.12, size * 0.15) // tattoo block
-    canvas.fillRect(size * 0.8, size * 0.75, size * 0.12, size * 0.1) // tattoo block
+    const cf1 = this.make.graphics({ x: 0, y: 0, add: false });
+    drawHeadFront(cf1);
+    drawTorso(cf1);
+    drawArmsFront(cf1);
+    drawLegs(cf1, 1);
+    cf1.generateTexture('player-walk-front-1', size, size);
 
-    // Hands with rings
-    canvas.fillStyle(0xe8c39e, 1)
-    canvas.fillCircle(size * 0.13, size * 0.88, size * 0.08) // left hand
-    canvas.fillCircle(size * 0.87, size * 0.88, size * 0.08) // right hand
-    canvas.fillStyle(0xc0c0c0, 1)
-    canvas.fillRect(size * 0.1, size * 0.85, size * 0.05, size * 0.04) // ring left
-    canvas.fillRect(size * 0.84, size * 0.85, size * 0.05, size * 0.04) // ring right
+    const cf2 = this.make.graphics({ x: 0, y: 0, add: false });
+    drawHeadFront(cf2);
+    drawTorso(cf2);
+    drawArmsFront(cf2);
+    drawLegs(cf2, 2);
+    cf2.generateTexture('player-walk-front-2', size, size);
 
-    canvas.generateTexture('player-idle', size, size)
+    // ---------- BACK VIEW ----------
+    const cb = this.make.graphics({ x: 0, y: 0, add: false });
+    drawHeadBack(cb);
+    drawTorso(cb);
+    drawArmsFront(cb); // same arms from back
+    drawLegs(cb, 0);
+    cb.generateTexture('player-idle-back', size, size);
 
-    // ---------- WALK FRAME 1 (left leg forward) ----------
-    const canvas2 = this.make.graphics({ x: 0, y: 0, add: false })
-    // Head & body (same as idle)
-    canvas2.fillStyle(0xe8c39e, 1)
-    canvas2.fillCircle(size / 2, size / 2, size / 2.3)
-    canvas2.fillStyle(0x1a1a1a, 1)
-    canvas2.fillCircle(size / 2, size * 0.28, size / 2.1)
-    canvas2.fillRect(size * 0.15, size * 0.28, size * 0.7, size * 0.12)
-    canvas2.fillStyle(0xffd700, 1)
-    canvas2.fillCircle(size / 2, size * 0.22, size * 0.08)
-    canvas2.lineStyle(3, 0x1a1a1a, 1)
-    canvas2.lineBetween(size * 0.3, size * 0.32, size * 0.22, size * 0.34)
-    canvas2.lineBetween(size * 0.7, size * 0.32, size * 0.78, size * 0.34)
-    canvas2.fillRect(size * 0.2, size * 0.3, size * 0.6, size * 0.06)
-    canvas2.fillStyle(0xf0f0f0, 1)
-    canvas2.fillCircle(size / 2, size * 0.62, size / 2.6)
-    canvas2.fillStyle(0xe8c39e, 1)
-    canvas2.fillRect(size * 0.25, size * 0.45, size * 0.5, size * 0.25)
-    canvas2.fillStyle(0xf0f0f0, 1)
-    canvas2.fillEllipse(size / 2, size * 0.42, size * 0.18, size * 0.08)
-    canvas2.fillStyle(0x1a1a1a, 1)
-    canvas2.fillRect(size * 0.22, size * 0.52, size * 0.56, size * 0.42)
-    canvas2.fillStyle(0xffffff, 1)
-    canvas2.fillRect(size * 0.18, size * 0.5, size * 0.08, size * 0.45)
-    canvas2.fillRect(size * 0.74, size * 0.5, size * 0.08, size * 0.45)
-    canvas2.fillRect(size * 0.18, size * 0.5, size * 0.64, size * 0.06)
-    canvas2.lineStyle(2, 0xffffff, 1)
-    canvas2.strokeCircle(size / 2, size * 0.68, size * 0.12)
-    canvas2.fillStyle(0xffffff, 1)
-    canvas2.fillCircle(size / 2, size * 0.68, size * 0.05)
-    canvas2.fillRect(size * 0.45, size * 0.64, size * 0.1, size * 0.03)
-    canvas2.lineStyle(1, 0xc0c0c0, 1)
-    canvas2.lineBetween(size * 0.4, size * 0.45, size * 0.6, size * 0.45)
-    canvas2.fillStyle(0xc0c0c0, 1)
-    canvas2.fillCircle(size / 2, size * 0.58, size * 0.04)
-    canvas2.fillStyle(0xe8c39e, 1)
-    canvas2.fillRect(size * 0.05, size * 0.55, size * 0.18, size * 0.3)
-    canvas2.fillStyle(0x2a2a2a, 0.6)
-    canvas2.fillRect(size * 0.08, size * 0.6, size * 0.12, size * 0.15)
-    canvas2.fillRect(size * 0.08, size * 0.75, size * 0.12, size * 0.1)
-    canvas2.fillStyle(0xe8c39e, 1)
-    canvas2.fillRect(size * 0.77, size * 0.55, size * 0.18, size * 0.3)
-    canvas2.fillStyle(0x2a2a2a, 0.6)
-    canvas2.fillRect(size * 0.8, size * 0.6, size * 0.12, size * 0.15)
-    canvas2.fillRect(size * 0.8, size * 0.75, size * 0.12, size * 0.1)
-    canvas2.fillStyle(0xe8c39e, 1)
-    canvas2.fillCircle(size * 0.13, size * 0.88, size * 0.08)
-    canvas2.fillCircle(size * 0.87, size * 0.88, size * 0.08)
-    canvas2.fillStyle(0xc0c0c0, 1)
-    canvas2.fillRect(size * 0.1, size * 0.85, size * 0.05, size * 0.04)
-    canvas2.fillRect(size * 0.84, size * 0.85, size * 0.05, size * 0.04)
-    // Left leg forward (blue jeans)
-    canvas2.fillStyle(0x4a6fa5, 1)
-    canvas2.fillRect(size * 0.3, size * 0.88, size * 0.16, size * 0.12)
-    canvas2.generateTexture('player-walk-1', size, size)
+    const cb1 = this.make.graphics({ x: 0, y: 0, add: false });
+    drawHeadBack(cb1);
+    drawTorso(cb1);
+    drawArmsFront(cb1);
+    drawLegs(cb1, 1);
+    cb1.generateTexture('player-walk-back-1', size, size);
 
-    // ---------- WALK FRAME 2 (right leg forward) ----------
-    const canvas3 = this.make.graphics({ x: 0, y: 0, add: false })
-    canvas3.fillStyle(0xe8c39e, 1)
-    canvas3.fillCircle(size / 2, size / 2, size / 2.3)
-    canvas3.fillStyle(0x1a1a1a, 1)
-    canvas3.fillCircle(size / 2, size * 0.28, size / 2.1)
-    canvas3.fillRect(size * 0.15, size * 0.28, size * 0.7, size * 0.12)
-    canvas3.fillStyle(0xffd700, 1)
-    canvas3.fillCircle(size / 2, size * 0.22, size * 0.08)
-    canvas3.lineStyle(3, 0x1a1a1a, 1)
-    canvas3.lineBetween(size * 0.3, size * 0.32, size * 0.22, size * 0.34)
-    canvas3.lineBetween(size * 0.7, size * 0.32, size * 0.78, size * 0.34)
-    canvas3.fillRect(size * 0.2, size * 0.3, size * 0.6, size * 0.06)
-    canvas3.fillStyle(0xf0f0f0, 1)
-    canvas3.fillCircle(size / 2, size * 0.62, size / 2.6)
-    canvas3.fillStyle(0xe8c39e, 1)
-    canvas3.fillRect(size * 0.25, size * 0.45, size * 0.5, size * 0.25)
-    canvas3.fillStyle(0xf0f0f0, 1)
-    canvas3.fillEllipse(size / 2, size * 0.42, size * 0.18, size * 0.08)
-    canvas3.fillStyle(0x1a1a1a, 1)
-    canvas3.fillRect(size * 0.22, size * 0.52, size * 0.56, size * 0.42)
-    canvas3.fillStyle(0xffffff, 1)
-    canvas3.fillRect(size * 0.18, size * 0.5, size * 0.08, size * 0.45)
-    canvas3.fillRect(size * 0.74, size * 0.5, size * 0.08, size * 0.45)
-    canvas3.fillRect(size * 0.18, size * 0.5, size * 0.64, size * 0.06)
-    canvas3.lineStyle(2, 0xffffff, 1)
-    canvas3.strokeCircle(size / 2, size * 0.68, size * 0.12)
-    canvas3.fillStyle(0xffffff, 1)
-    canvas3.fillCircle(size / 2, size * 0.68, size * 0.05)
-    canvas3.fillRect(size * 0.45, size * 0.64, size * 0.1, size * 0.03)
-    canvas3.lineStyle(1, 0xc0c0c0, 1)
-    canvas3.lineBetween(size * 0.4, size * 0.45, size * 0.6, size * 0.45)
-    canvas3.fillStyle(0xc0c0c0, 1)
-    canvas3.fillCircle(size / 2, size * 0.58, size * 0.04)
-    canvas3.fillStyle(0xe8c39e, 1)
-    canvas3.fillRect(size * 0.05, size * 0.55, size * 0.18, size * 0.3)
-    canvas3.fillStyle(0x2a2a2a, 0.6)
-    canvas3.fillRect(size * 0.08, size * 0.6, size * 0.12, size * 0.15)
-    canvas3.fillRect(size * 0.08, size * 0.75, size * 0.12, size * 0.1)
-    canvas3.fillStyle(0xe8c39e, 1)
-    canvas3.fillRect(size * 0.77, size * 0.55, size * 0.18, size * 0.3)
-    canvas3.fillStyle(0x2a2a2a, 0.6)
-    canvas3.fillRect(size * 0.8, size * 0.6, size * 0.12, size * 0.15)
-    canvas3.fillRect(size * 0.8, size * 0.75, size * 0.12, size * 0.1)
-    canvas3.fillStyle(0xe8c39e, 1)
-    canvas3.fillCircle(size * 0.13, size * 0.88, size * 0.08)
-    canvas3.fillCircle(size * 0.87, size * 0.88, size * 0.08)
-    canvas3.fillStyle(0xc0c0c0, 1)
-    canvas3.fillRect(size * 0.1, size * 0.85, size * 0.05, size * 0.04)
-    canvas3.fillRect(size * 0.84, size * 0.85, size * 0.05, size * 0.04)
-    // Right leg forward (blue jeans)
-    canvas3.fillStyle(0x4a6fa5, 1)
-    canvas3.fillRect(size * 0.54, size * 0.88, size * 0.16, size * 0.12)
-    canvas3.generateTexture('player-walk-2', size, size)
+    const cb2 = this.make.graphics({ x: 0, y: 0, add: false });
+    drawHeadBack(cb2);
+    drawTorso(cb2);
+    drawArmsFront(cb2);
+    drawLegs(cb2, 2);
+    cb2.generateTexture('player-walk-back-2', size, size);
 
-    // ---------- ATTACK FRAME (arm forward with axe swing) ----------
-    const canvas4 = this.make.graphics({ x: 0, y: 0, add: false })
-    canvas4.fillStyle(0xe8c39e, 1)
-    canvas4.fillCircle(size / 2, size / 2, size / 2.3)
-    canvas4.fillStyle(0x1a1a1a, 1)
-    canvas4.fillCircle(size / 2, size * 0.28, size / 2.1)
-    canvas4.fillRect(size * 0.15, size * 0.28, size * 0.7, size * 0.12)
-    canvas4.fillStyle(0xffd700, 1)
-    canvas4.fillCircle(size / 2, size * 0.22, size * 0.08)
-    canvas4.lineStyle(3, 0x1a1a1a, 1)
-    canvas4.lineBetween(size * 0.3, size * 0.32, size * 0.22, size * 0.34)
-    canvas4.lineBetween(size * 0.7, size * 0.32, size * 0.78, size * 0.34)
-    canvas4.fillRect(size * 0.2, size * 0.3, size * 0.6, size * 0.06)
-    canvas4.fillStyle(0xf0f0f0, 1)
-    canvas4.fillCircle(size / 2, size * 0.62, size / 2.6)
-    canvas4.fillStyle(0xe8c39e, 1)
-    canvas4.fillRect(size * 0.25, size * 0.45, size * 0.5, size * 0.25)
-    canvas4.fillStyle(0xf0f0f0, 1)
-    canvas4.fillEllipse(size / 2, size * 0.42, size * 0.18, size * 0.08)
-    canvas4.fillStyle(0x1a1a1a, 1)
-    canvas4.fillRect(size * 0.22, size * 0.52, size * 0.56, size * 0.42)
-    canvas4.fillStyle(0xffffff, 1)
-    canvas4.fillRect(size * 0.18, size * 0.5, size * 0.08, size * 0.45)
-    canvas4.fillRect(size * 0.74, size * 0.5, size * 0.08, size * 0.45)
-    canvas4.fillRect(size * 0.18, size * 0.5, size * 0.64, size * 0.06)
-    canvas4.lineStyle(2, 0xffffff, 1)
-    canvas4.strokeCircle(size / 2, size * 0.68, size * 0.12)
-    canvas4.fillStyle(0xffffff, 1)
-    canvas4.fillCircle(size / 2, size * 0.68, size * 0.05)
-    canvas4.fillRect(size * 0.45, size * 0.64, size * 0.1, size * 0.03)
-    canvas4.lineStyle(1, 0xc0c0c0, 1)
-    canvas4.lineBetween(size * 0.4, size * 0.45, size * 0.6, size * 0.45)
-    canvas4.fillStyle(0xc0c0c0, 1)
-    canvas4.fillCircle(size / 2, size * 0.58, size * 0.04)
-    canvas4.fillStyle(0xe8c39e, 1)
-    canvas4.fillRect(size * 0.05, size * 0.55, size * 0.18, size * 0.3)
-    canvas4.fillStyle(0x2a2a2a, 0.6)
-    canvas4.fillRect(size * 0.08, size * 0.6, size * 0.12, size * 0.15)
-    canvas4.fillRect(size * 0.08, size * 0.75, size * 0.12, size * 0.1)
-    canvas4.fillStyle(0xe8c39e, 1)
-    canvas4.fillRect(size * 0.77, size * 0.55, size * 0.18, size * 0.3)
-    canvas4.fillStyle(0x2a2a2a, 0.6)
-    canvas4.fillRect(size * 0.8, size * 0.6, size * 0.12, size * 0.15)
-    canvas4.fillRect(size * 0.8, size * 0.75, size * 0.12, size * 0.1)
-    canvas4.fillStyle(0xe8c39e, 1)
-    canvas4.fillCircle(size * 0.13, size * 0.88, size * 0.08)
-    canvas4.fillCircle(size * 0.87, size * 0.88, size * 0.08)
-    canvas4.fillStyle(0xc0c0c0, 1)
-    canvas4.fillRect(size * 0.1, size * 0.85, size * 0.05, size * 0.04)
-    canvas4.fillRect(size * 0.84, size * 0.85, size * 0.05, size * 0.04)
-    // Axe swing (right arm forward)
-    canvas4.fillStyle(0x5d4037, 1)
-    canvas4.fillRect(size * 0.8, size * 0.5, size * 0.2, size * 0.1) // handle
-    canvas4.fillStyle(0x8b4513, 1)
-    canvas4.fillRect(size * 0.95, size * 0.48, size * 0.1, size * 0.12) // blade
-    canvas4.generateTexture('player-attack', size, size)
+    // ---------- LEFT VIEW ----------
+    const cl = this.make.graphics({ x: 0, y: 0, add: false });
+    drawHeadSide(cl, false);
+    drawTorsoSide(cl, false);
+    cl.fillStyle(skin);
+    cl.fillRect(size * 0.62, size * 0.55, size * 0.12, size * 0.20); // left arm (visible)
+    cl.fillStyle(jeans);
+    cl.fillRect(size * 0.44, size * 0.84, size * 0.10, size * 0.14);
+    cl.fillRect(size * 0.48, size * 0.84, size * 0.10, size * 0.14);
+    cl.generateTexture('player-idle-left', size, size);
 
-    this.anims.create({
-      key: 'player-walk',
-      frames: [
-        { key: 'player-walk-1', frame: 0 },
-        { key: 'player-idle', frame: 0 },
-        { key: 'player-walk-2', frame: 0 },
-        { key: 'player-idle', frame: 0 }
-      ],
-      frameRate: 10,
-      repeat: -1
-    })
+    const cl1 = this.make.graphics({ x: 0, y: 0, add: false });
+    drawHeadSide(cl1, false);
+    drawTorsoSide(cl1, false);
+    cl1.fillStyle(skin);
+    cl1.fillRect(size * 0.62, size * 0.55, size * 0.12, size * 0.20);
+    cl1.fillStyle(jeans);
+    cl1.fillRect(size * 0.42, size * 0.84, size * 0.10, size * 0.14);
+    cl1.fillRect(size * 0.48, size * 0.84, size * 0.10, size * 0.14);
+    cl1.generateTexture('player-walk-left-1', size, size);
+
+    const cl2 = this.make.graphics({ x: 0, y: 0, add: false });
+    drawHeadSide(cl2, false);
+    drawTorsoSide(cl2, false);
+    cl2.fillStyle(skin);
+    cl2.fillRect(size * 0.62, size * 0.55, size * 0.12, size * 0.20);
+    cl2.fillStyle(jeans);
+    cl2.fillRect(size * 0.46, size * 0.84, size * 0.10, size * 0.14);
+    cl2.fillRect(size * 0.50, size * 0.84, size * 0.10, size * 0.14);
+    cl2.generateTexture('player-walk-left-2', size, size);
+
+    // ---------- RIGHT VIEW ----------
+    const cr = this.make.graphics({ x: 0, y: 0, add: false });
+    drawHeadSide(cr, true);
+    drawTorsoSide(cr, true);
+    cr.fillStyle(skin);
+    cr.fillRect(size * 0.26, size * 0.55, size * 0.12, size * 0.20); // right arm (visible)
+    cr.fillStyle(jeans);
+    cr.fillRect(size * 0.42, size * 0.84, size * 0.10, size * 0.14);
+    cr.fillRect(size * 0.48, size * 0.84, size * 0.10, size * 0.14);
+    cr.generateTexture('player-idle-right', size, size);
+
+    const cr1 = this.make.graphics({ x: 0, y: 0, add: false });
+    drawHeadSide(cr1, true);
+    drawTorsoSide(cr1, true);
+    cr1.fillStyle(skin);
+    cr1.fillRect(size * 0.26, size * 0.55, size * 0.12, size * 0.20);
+    cr1.fillStyle(jeans);
+    cr1.fillRect(size * 0.42, size * 0.84, size * 0.10, size * 0.14);
+    cr1.fillRect(size * 0.48, size * 0.84, size * 0.10, size * 0.14);
+    cr1.generateTexture('player-walk-right-1', size, size);
+
+    const cr2 = this.make.graphics({ x: 0, y: 0, add: false });
+    drawHeadSide(cr2, true);
+    drawTorsoSide(cr2, true);
+    cr2.fillStyle(skin);
+    cr2.fillRect(size * 0.26, size * 0.55, size * 0.12, size * 0.20);
+    cr2.fillStyle(jeans);
+    cr2.fillRect(size * 0.44, size * 0.84, size * 0.10, size * 0.14);
+    cr2.fillRect(size * 0.50, size * 0.84, size * 0.10, size * 0.14);
+    cr2.generateTexture('player-walk-right-2', size, size);
+
+    // ---------- ANIMATIONS ----------
+    const dirs = ['front', 'back', 'left', 'right'];
+    dirs.forEach(dir => {
+      const cap = dir.charAt(0).toUpperCase() + dir.slice(1);
+      this.anims.create({
+        key: `playerIdle${cap}`,
+        frames: [{ key: `player-idle-${dir}`, frame: 0 }],
+        repeat: -1
+      });
+      this.anims.create({
+        key: `playerWalk${cap}`,
+        frames: [
+          { key: `player-walk-${dir}-1`, frame: 0 },
+          { key: `player-idle-${dir}`, frame: 0 },
+          { key: `player-walk-${dir}-2`, frame: 0 },
+          { key: `player-idle-${dir}`, frame: 0 }
+        ],
+        frameRate: 10,
+        repeat: -1
+      });
+    });
   }
 
   // ============================================================

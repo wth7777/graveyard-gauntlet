@@ -17,7 +17,7 @@
     }
     .loading-bar { width: 300px; height: 8px; background: #333; border-radius: 4px; overflow: hidden; margin-top: 16px; }
     .loading-fill { width: 0%; height: 100%; background: #4ade80; transition: width 0.1s; }
-    /* DIAGNOSTIC OVERLAY - outside Phaser canvas */
+    /* DIAGNOSTIC OVERLAY - outside Phaser canvas (hidden by default; press F1 to toggle) */
     #diag-panel {
       position: fixed;
       top: 10px;
@@ -25,34 +25,20 @@
       z-index: 99999;
       background: rgba(0, 0, 0, 0.9);
       color: #00ff00;
-      font-family: 'Courier New', monospace;
+      font-family: 'Courier New, monospace';
       font-size: 14px;
       padding: 10px;
       border: 2px solid #00ff00;
       border-radius: 4px;
       max-width: 400px;
-      display: block;
+      display: none;
     }
     #diag-panel .stage { margin: 4px 0; }
     #diag-panel .stage.ok { color: #00ff00; }
     #diag-panel .stage.fail { color: #ff0000; }
     #diag-panel .stage.info { color: #ffff00; }
-    #canvas-info {
-        position: fixed;
-        bottom: 10px;
-        left: 10px;
-        z-index: 99999;
-        background: rgba(0, 0, 0, 0.9);
-        color: #00ff00;
-        font-family: 'Courier New, monospace';
-        font-size: 12px;
-        padding: 8px;
-        border: 2px solid #00ff00;
-        border-radius: 4px;
-        display: block;
-      }
 
-      /* Touch controls overlay - hidden by default, shown on touch devices */
+      /* Touch controls overlay - visible on touch devices, above canvas */
       #touch-controls {
         position: absolute;
         bottom: 20px;
@@ -62,11 +48,8 @@
         justify-content: space-between;
         align-items: flex-end;
         padding: 10px;
-        pointer-events: none;
-        z-index: 50;
-      }
-      #touch-controls.show {
         pointer-events: auto;
+        z-index: 100;
       }
       .dpad {
         display: flex;
@@ -170,19 +153,17 @@
   </div>
 
   <!-- Diagnostic panel outside Phaser canvas -->
-  <div id="diag-panel">
-    <div style="font-weight: bold; color: #ffffff; margin-bottom: 8px;">GRAVEYARD GAUNTLET — DIAGNOSTICS</div>
-    <div id="diag-stage-init" class="stage info">INIT: HTML loaded</div>
-    <div id="diag-stage-phaser" class="stage info">PHASER: waiting...</div>
-    <div id="diag-stage-boot" class="stage info">BOOT: waiting...</div>
-    <div id="diag-stage-main" class="stage info">MAIN: waiting...</div>
-    <div id="diag-stage-ui" class="stage info">UI: waiting...</div>
-    <div id="diag-errors" class="stage fail" style="display:none;"></div>
-  </div>
+    <div id="diag-panel">
+      <div style="font-weight: bold; color: #ffffff; margin-bottom: 8px;">GRAVEYARD GAUNTLET — DIAGNOSTICS</div>
+      <div id="diag-stage-init" class="stage info">INIT: HTML loaded</div>
+      <div id="diag-stage-phaser" class="stage info">PHASER: waiting...</div>
+      <div id="diag-stage-boot" class="stage info">BOOT: waiting...</div>
+      <div id="diag-stage-main" class="stage info">MAIN: waiting...</div>
+      <div id="diag-stage-ui" class="stage info">UI: waiting...</div>
+      <div id="diag-errors" class="stage fail" style="display:none;"></div>
+    </div>
 
-  <div id="canvas-info"></div>
-
-  <div id="loading-overlay" class="loading-overlay">
+    <div id="loading-overlay" class="loading-overlay">
     <div style="font-size: 24px; font-weight: bold; letter-spacing: 2px;">GRAVEYARD GAUNTLET</div>
     <div style="font-size: 14px; margin-top: 8px; opacity: 0.8;">Loading...</div>
     <div class="loading-bar"><div class="loading-fill" id="loading-fill"></div></div>

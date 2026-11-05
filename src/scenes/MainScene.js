@@ -146,8 +146,9 @@ export default class MainScene extends Phaser.Scene {
 
       this.setDiag('CAMERA')
       // ---------- CAMERA ----------
-      this.cameras.main.startFollow(this.player, true, 0.1, 0.1, -0, -40)
       this.cameras.main.setBounds(0, 0, this.mazeCols * this.tileSize, this.mazeRows * this.tileSize)
+      this.cameras.main.centerOn(this.player.x, this.player.y)
+      this.cameras.main.startFollow(this.player, true, 0.08, 0.08, 0, -40)
       this.cameras.main.setZoom(3.0)
 
       this.setDiag('INPUT')
@@ -157,6 +158,10 @@ export default class MainScene extends Phaser.Scene {
       this.input.keyboard.on('keydown-SPACE', () => this.tryAttack())
       this.input.keyboard.on('keydown-E', () => this.tryInteract())
       this.input.keyboard.on('keydown-ESC', () => this.scene.pause())
+      this.input.keyboard.on('keydown-F1', () => {
+        const diag = document.getElementById('diag-panel')
+        if (diag) diag.style.display = diag.style.display === 'none' ? 'block' : 'none'
+      })
 
       // Click to attack / interact
       this.input.on('pointerdown', (pointer) => {
@@ -456,8 +461,8 @@ export default class MainScene extends Phaser.Scene {
     const spawnX = Math.floor(this.mazeCols / 2) * this.tileSize  // center of maze
     const spawnY = Math.floor(this.mazeRows / 2) * this.tileSize  // center of maze
 
-    this.player = this.physics.add.sprite(spawnX, spawnY, 'player-idle')
-    this.player.setDisplaySize(40, 40)
+    this.player = this.physics.add.sprite(spawnX, spawnY, 'player-idle-front')
+    this.player.setDisplaySize(24, 24)
     this.player.setCollideWorldBounds(true)
     this.player.body.setSize(20, 20)
     this.player.body.setOffset(10, 10)
@@ -864,15 +869,23 @@ export default class MainScene extends Phaser.Scene {
 
       this.player.setVelocity(vx * this.playerSpeed, vy * this.playerSpeed)
 
+      // Directional texture based on last movement direction
+      const dir = this.player.lastDir
+      const move = len > 0
+      const frame = this.player.walkFrame === 0 ? 1 : 2
+      const base = `player-${move ? 'walk' : 'idle'}-${dir.y === -1 ? 'back' : dir.y === 1 ? 'front' : dir.x === -1 ? 'left' : 'right'}`
+      const tex = move ? `player-walk-${dir.y === -1 ? 'back' : dir.y === 1 ? 'front' : dir.x === -1 ? 'left' : 'right'}-${frame}` : `player-idle-${dir.y === -1 ? 'back' : dir.y === 1 ? 'front' : dir.x === -1 ? 'left' : 'right'}`
+      this.player.setTexture(tex)
+
       if (len > 0) {
         this.player.walkTimer += dtSec
         if (this.player.walkTimer > 0.15) {
           this.player.walkTimer = 0
           this.player.walkFrame = (this.player.walkFrame + 1) % 2
-          this.player.setTexture(this.player.walkFrame === 0 ? 'player-walk-1' : 'player-walk-2')
+          this.player.setTexture(`player-walk-${dir.y === -1 ? 'back' : dir.y === 1 ? 'front' : dir.x === -1 ? 'left' : 'right'}-${this.player.walkFrame === 0 ? 1 : 2}`)
         }
       } else {
-        this.player.setTexture('player-idle')
+        this.player.setTexture(`player-idle-${dir.y === -1 ? 'back' : dir.y === 1 ? 'front' : dir.x === -1 ? 'left' : 'right'}`)
       }
     }
 
